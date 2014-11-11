@@ -8,12 +8,16 @@ public class Instrument {
     private String quotedCurrency;
     private double price; //how much quoted Currency you should give for 1 base currency
     private double pointSize; //0.0001 for EURUSD
+    private double lotValue; //in quotedCurrency (for EURUSD in USD)
+    private double minPos; //the smallest position in lots (in admiral markets it is 0.01 lots for eurusd)
 
-    public this() {
-        baseCurrency="EUR"
-        quotedCurrency="USD";
-        price=1.2486;
-        pointSize=0.0001;
+    public Instrument()    {
+        baseCurrency = "EUR";
+        quotedCurrency = "USD";
+        price = 1.2486;
+        pointSize = 0.0001;
+        lotValue = 10;
+        minPos=0.01;
     }
 
     public String getBaseCurrency() {
@@ -46,5 +50,21 @@ public class Instrument {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public double getLotValue() {
+        return lotValue;
+    }
+
+    public void setLotValue(double lotValue) {
+        this.lotValue = lotValue;
+    }
+
+    public double getMinPos() {
+        return minPos;
+    }
+
+    public void setMinPos(double minPos) {
+        this.minPos = minPos;
     }
 }

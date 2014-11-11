@@ -7,8 +7,19 @@ package skuteczne_inwestowanie.pl.sizeofposcalc;
 public class Position {
     private Instrument instrument;
     private Account account;
+    private double openPrice; //open price
     private double sl; //stop loss
     private double size; //size in lots
+
+    //temporary
+    public Position() {
+        instrument = new Instrument();
+        account = new Account();
+
+        openPrice = instrument.getPrice();
+        sl = openPrice - 20 * instrument.getPointSize();
+        size = instrument.getMinPos();
+    }
 
     public Instrument getInstrument() {
         return instrument;
@@ -24,6 +35,14 @@ public class Position {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public double getOpenPrice() {
+        return openPrice;
+    }
+
+    public void setOpenPrice(double openPrice) {
+        this.openPrice = openPrice;
     }
 
     public double getSl() {
@@ -42,9 +61,22 @@ public class Position {
         this.size = size;
     }
 
-    public void calcSize() {
-        double MaxCapitalAtRisk=account.getMaxRisk()*account.getBalance();
-        double oneLotRisk=Math.abs(instrument.getPrice()-sl)/pointSize
-        size = MaxCapitalAtRisk/oneLotRisk;
+    public double calcSlOffset() {
+        return Math.floor((openPrice - sl) / instrument.getPointSize());
+    }
+
+    public double calcSize() {
+        double MaxCapitalAtRisk = account.getMaxRisk() * account.getBalance();
+//        double oneLotRisk = Math.floor(
+//                calcSlOffset()
+//                        * ConvertCurrency.calc(
+//                        instrument.getLotValue(), instrument.getQuotedCurrency(), account.getCurrency()
+//                ) / instrument.getMinPos()) * instrument.getMinPos();
+        int tempCalc = (int) Math.floor(calcSlOffset()
+                * ConvertCurrency.calc(instrument.getLotValue(), instrument.getQuotedCurrency(), account.getCurrency())
+                / instrument.getMinPos());
+        double oneLotRisk=tempCalc* instrument.getMinPos();
+        size = MaxCapitalAtRisk / oneLotRisk;
+        return size;
     }
 }

@@ -8,7 +8,7 @@ public class Account {
     private double balance;
     private double maxRisk; //in percents
 
-    public this()    {
+    public Account()    {
         //temporary
         currency = "PLN";
         balance = 10000;
