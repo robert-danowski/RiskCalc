@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
 
         etPrice.setText(Double.toString(position.getOpenPrice()));
         etSl.setText(Double.toString(position.getSl()));
-        etSlOffset.setText(Double.toString(position.calcSlOffset()));
+        etSlOffset.setText(Integer.toString(position.calcSlOffset()));
         etSize.setText(Double.toString(position.calcSize()));
 
     }
