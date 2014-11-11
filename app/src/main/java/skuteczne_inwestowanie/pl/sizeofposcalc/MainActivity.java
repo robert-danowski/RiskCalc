@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnFocusChangeListener {
 
     private Position position;
 
@@ -24,13 +26,14 @@ public class MainActivity extends Activity {
         position = new Position();
 
         etPrice = (EditText) findViewById(R.id.etPrice);
+        etPrice.setOnFocusChangeListener(this);
         etSl = (EditText) findViewById(R.id.etSl);
         etSlOffset = (EditText) findViewById(R.id.etSlOffset);
         etSize = (EditText) findViewById(R.id.etSize);
 
         etPrice.setText(Double.toString(position.getOpenPrice()));
         etSl.setText(Double.toString(position.getSl()));
-        etSlOffset.setText(Integer.toString(position.calcSlOffset()));
+        calcEtOffset();
         etSize.setText(Double.toString(position.calcSize()));
 
     }
@@ -53,5 +56,26 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+//    @Override
+//    public void onFocusChange(View v, boolean hasFocus) {
+//        if (v==etPrice) {
+//            calcEtOffset();
+//        }
+//    }
+
+    public void calcEtOffset() {
+        etSlOffset.setText(Integer.toString(position.calcSlOffset()));
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (v==etPrice && !hasFocus) {
+            //user probably changed open price, so we take it
+            position.setOpenPrice(etPrice.getText().toString());
+            calcEtOffset();
+        }
     }
 }

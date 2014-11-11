@@ -44,6 +44,9 @@ public class Position {
     public void setOpenPrice(double openPrice) {
         this.openPrice = openPrice;
     }
+    public void setOpenPrice(String openPrice) {
+        this.openPrice = Double.parseDouble(openPrice);
+    }
 
     public double getSl() {
         return sl;
