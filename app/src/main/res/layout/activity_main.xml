@@ -90,25 +90,75 @@
         android:weightSum="100">
 
         <EditText
+            android:id="@+id/etPercentRisk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:inputType="numberDecimal"
+            android:text="0.02"
+            android:layout_weight="35"/>
+
+        <EditText
             android:id="@+id/etSize"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:inputType="numberDecimal"
             android:text="0.01"
-            android:layout_weight="80"/>
+            android:layout_weight="30"/>
+
+        <EditText
+            android:id="@+id/etAmountRisk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:inputType="numberDecimal"
+            android:text="0.02"
+            android:layout_weight="35"/>
+
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="100">
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="update:"
+            android:layout_weight="25" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="balance:"
-            android:layout_weight="20"
-            android:layout_gravity="center_vertical"/>
+            android:layout_weight="50" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="currency:"
+            android:layout_weight="25" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100">
+
+        <ImageButton
+            android:id="@+id/ibDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"
+            android:src="@android:drawable/stat_sys_download"
+            android:maxHeight="10dip"/>
+
         <EditText
             android:id="@+id/etBalance"
             android:layout_width="0dp"
@@ -126,26 +176,6 @@
             android:text="PLN"
             android:layout_weight="20"/>
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="100">
 
-        <EditText
-            android:id="@+id/etMaxRisk"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:inputType="numberDecimal"
-            android:text="0.02"
-            android:layout_weight="80"/>
-    </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/ibDownload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/stat_sys_download"
-        android:maxHeight="10dip"/>
 
 </LinearLayout>
