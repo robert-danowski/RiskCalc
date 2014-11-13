@@ -12,8 +12,30 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="price:"
-            android:layout_weight="20"
+            android:layout_weight="35"
             android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="points:"
+            android:layout_weight="30" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="sl:"
+            android:layout_weight="35" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100">
+
         <EditText
             android:id="@+id/etPrice"
             android:layout_width="0dp"
@@ -21,47 +43,17 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:inputType="numberDecimal"
             android:text="1.2486"
-            android:layout_weight="80"/>
+            android:layout_weight="35"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageButton
-            android:id="@+id/ibDownload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/stat_sys_download"
-            android:layout_gravity="left"
-            android:maxHeight="10dip"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="points:"
-            android:layout_gravity="center_vertical"/>
         <EditText
             android:id="@+id/etSlOffset"
-            android:layout_width="60sp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="30"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:inputType="numberSigned"
             android:text="10"/>
-        </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="100">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="sl:"
-            android:layout_weight="20"
-            android:layout_gravity="center_vertical"/>
         <EditText
             android:id="@+id/etSl"
             android:layout_width="0dp"
@@ -69,20 +61,34 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:inputType="numberDecimal"
             android:text="1.2476"
-            android:layout_weight="80"/>
-
+            android:layout_weight="35"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="100">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="max risk:"
+            android:layout_weight="35" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="size:"
-            android:layout_weight="20"
+            android:layout_weight="30"
             android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100">
+
         <EditText
             android:id="@+id/etSize"
             android:layout_width="0dp"
@@ -124,13 +130,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="100">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="max risk:"
-            android:layout_weight="20"
-            android:layout_gravity="center_vertical"/>
+
         <EditText
             android:id="@+id/etMaxRisk"
             android:layout_width="0dp"
@@ -140,5 +140,12 @@
             android:text="0.02"
             android:layout_weight="80"/>
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/ibDownload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/stat_sys_download"
+        android:maxHeight="10dip"/>
 
 </LinearLayout>
