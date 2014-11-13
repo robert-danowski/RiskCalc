@@ -68,12 +68,15 @@ public class Position {
         return (int)Math.floor((openPrice - sl) / instrument.getPointSize());
     }
 
+    public double oneLotRisk() {
+        return Math.abs(calcSlOffset())* ConvertCurrency.calc(
+                instrument.getLotValue(), instrument.getQuotedCurrency(), account.getCurrency()
+        );
+    }
+
     public double calcSize() {
         double MaxCapitalAtRisk = account.getMaxRisk() * account.getBalance();
-        double oneLotRisk = calcSlOffset()* ConvertCurrency.calc(
-                    instrument.getLotValue(), instrument.getQuotedCurrency(), account.getCurrency()
-                );
-        size = Math.floor(MaxCapitalAtRisk / oneLotRisk/ instrument.getMinPos()) * instrument.getMinPos();
+        size = Math.floor(MaxCapitalAtRisk / oneLotRisk() / instrument.getMinPos()) * instrument.getMinPos();
         return size;
     }
 }
