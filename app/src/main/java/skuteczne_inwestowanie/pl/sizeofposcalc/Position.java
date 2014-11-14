@@ -1,5 +1,7 @@
 package skuteczne_inwestowanie.pl.sizeofposcalc;
 
+import android.text.Editable;
+
 /**
  * Created by teodor on 2014-11-10.
  * link between market and our account, we can choose moment and size of our position
@@ -79,4 +81,6 @@ public class Position {
         size = Math.floor(MaxCapitalAtRisk / oneLotRisk() / instrument.getMinPos()) * instrument.getMinPos();
         return size;
     }
+
+
 }

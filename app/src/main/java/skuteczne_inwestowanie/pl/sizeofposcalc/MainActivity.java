@@ -68,13 +68,15 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
     }
 
     public void calcEtSize() {
-
+        etSize.setText(Double.toString(position.calcSize()));
+        animateTextView(etSize);
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (v == etPrice && !hasFocus) {
-
+            //when we leave field we need to remember it
+            position.setOpenPrice(etPrice.getText().toString());
         }
     }
 
@@ -85,6 +87,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
                 //user probably changed open price, so we take it
                 position.setOpenPrice(etPrice.getText().toString());
                 calcEtOffset();
+                calcEtSize();
             }
         }
     }
@@ -92,14 +95,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
     private class AnimateCalculatedFields extends AsyncTask<TextView, Integer, Void> {
 
         TextView animatedTextView;
-        int originalColor;
-
 
         @Override
         protected Void doInBackground(TextView... params) {
 
             animatedTextView = params[0];
-            originalColor = animatedTextView.getCurrentTextColor();
 
             for (int i = 0; i < 255; i += 2) {
                 sleepAndPublish(i);
@@ -127,7 +127,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            animatedTextView.setTextColor(originalColor);
+            animatedTextView.setTextColor(Color.BLACK);
         }
     }
 
@@ -138,11 +138,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
         }
 
         AnimateCalculatedFields animateCalculatedFields = new AnimateCalculatedFields();
-        animateCalculatedFields.execute(textView);
+        //animateCalculatedFields.execute(textView);
+        animateCalculatedFields.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,textView);
         textView.setTag(animateCalculatedFields); //this is important for first lines of this methods
-    }
-
-    public void calculate(View view) {
-        //animateTextView(etPrice);
     }
 }
