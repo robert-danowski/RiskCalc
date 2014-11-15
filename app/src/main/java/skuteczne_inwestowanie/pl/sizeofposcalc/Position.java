@@ -1,7 +1,5 @@
 package skuteczne_inwestowanie.pl.sizeofposcalc;
 
-import android.text.Editable;
-
 /**
  * Created by teodor on 2014-11-10.
  * link between market and our account, we can choose moment and size of our position
@@ -66,12 +64,16 @@ public class Position {
         this.size = size;
     }
 
-    public int calcSlOffset() {
-        return (int)Math.floor((openPrice - sl) / instrument.getPointSize());
+    public int getSlOffset() {
+        return (int)Math.round((openPrice - sl) / instrument.getPointSize());
     }
+    public void setSlOffset(int slOffset) {
+        this.sl=slOffset*instrument.getPointSize()+openPrice;
+    }
+    public void setSlOffset(String slOffset) {setSlOffset(String.valueOf(slOffset));}
 
     public double oneLotRisk() {
-        return Math.abs(calcSlOffset())* ConvertCurrency.calc(
+        return Math.abs(getSlOffset())* ConvertCurrency.calc(
                 instrument.getLotValue(), instrument.getQuotedCurrency(), account.getCurrency()
         );
     }

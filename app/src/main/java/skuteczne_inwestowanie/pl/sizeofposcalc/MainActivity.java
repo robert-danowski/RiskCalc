@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
     }
 
     public void calcEtOffset() {
-        etSlOffset.setText(Integer.toString(position.calcSlOffset()));
+        etSlOffset.setText(Integer.toString(position.getSlOffset()));
         animateTextView(etSlOffset);
     }
 
@@ -72,10 +72,16 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
         animateTextView(etSize);
     }
 
+    public void calcEtSl() {
+        //new sl should be calculated
+        etSl.setText(Double.toString(position.getSl()));
+        animateTextView(etSl);
+    }
+
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        //when we leave field we need to remember it
         if (v == etPrice && !hasFocus) {
-            //when we leave field we need to remember it
             position.setOpenPrice(etPrice.getText().toString());
         }
     }
@@ -87,6 +93,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
                 //user probably changed open price, so we take it
                 position.setOpenPrice(etPrice.getText().toString());
                 calcEtOffset();
+                calcEtSize();
+            }
+            if (etSlOffset.isFocused()) {
+                position.setSlOffset(etSlOffset.getText().toString());
+                calcEtSl();
                 calcEtSize();
             }
         }
