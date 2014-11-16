@@ -7,12 +7,14 @@ public class Account {
     private String currency;
     private double balance;
     private double maxRisk; //in percents
+    private double minUnit; //for most currencies it is 0.01
 
-    public Account()    {
+    public Account() {
         //temporary
         currency = "PLN";
         balance = 10000;
         maxRisk = 0.02;
+        minUnit= 0.01;
     }
 
     public String getCurrency() {
@@ -37,5 +39,13 @@ public class Account {
 
     public void setMaxRisk(double maxRisk) {
         this.maxRisk = maxRisk;
+    }
+
+    public double getMinUnit() {
+        return minUnit;
+    }
+
+    public void setMinUnit(double minUnit) {
+        this.minUnit = minUnit;
     }
 }

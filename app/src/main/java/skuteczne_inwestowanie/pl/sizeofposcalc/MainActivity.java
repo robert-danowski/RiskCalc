@@ -10,8 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 
-public class MainActivity extends Activity implements OnFocusChangeListener,OnClickListener {
+
+public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener {
 
     private Position position;
 
@@ -23,7 +26,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
     private EditText etAmountRisk;
     private EditText etBalance;
     private Button bCalculate;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,14 +35,52 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
         position = new Position();
 
         initActivityFields();
-
-        etPrice.setText(Double.toString(position.getOpenPrice()));
-        etSl.setText(Double.toString(position.getSl()));
-        calcEtOffset();
-        etSize.setText(Double.toString(position.calcSize()));
-
     }
 
+    void setEtValue(EditText et, Double value, int decimalPlaces) {
+        NumberFormat nf = NumberFormat.getInstance(Locale.ENGLISH);
+        nf.setGroupingUsed(false);
+        if (decimalPlaces<=0) {
+            nf.setParseIntegerOnly(true);
+            nf.setMinimumIntegerDigits(-decimalPlaces);
+        }
+        else {
+            nf.setParseIntegerOnly(false);
+            nf.setMaximumFractionDigits(decimalPlaces);
+            nf.setMinimumFractionDigits(decimalPlaces);
+        }
+        et.setText(nf.format(value));
+        animateTextView(et);
+    }
+
+    Double getEtPriceValue(){
+        return Double.parseDouble(etPrice.getText().toString());
+    }
+
+    Double getEtSlValue(){
+        return Double.parseDouble(etSl.getText().toString());
+    }
+    
+    Integer getEtSlOffsetValue(){
+        return Integer.parseInt(etSlOffset.getText().toString());
+    }
+
+    Double getEtSizeValue() {
+        return Double.parseDouble(etSize.getText().toString());
+    }
+
+    Double getEtPercentRiskValue() {
+        return Double.parseDouble(etPercentRisk.getText().toString());
+    }
+
+    Double getEtAmountRiskValue() {
+        return Double.parseDouble(etAmountRisk.getText().toString());
+    }
+
+    Double  getEtBalanceValue() {
+        return Double.parseDouble(etBalance.getText().toString());
+    }
+    
     private void initActivityFields() {
         //find view
         etPrice = (EditText) findViewById(R.id.etPrice);
@@ -50,6 +91,14 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
         etAmountRisk = (EditText) findViewById(R.id.etAmountRisk);
         etBalance = (EditText) findViewById(R.id.etBalance);
         bCalculate = (Button) findViewById(R.id.bCalculate);
+        //init values
+        setEtValue(etPrice, position.getOpenPrice(), -(int)Math.log10(position.getInstrument().getPointSize()));
+        setEtValue(etSl, position.getSl(), -(int)Math.log10(position.getInstrument().getPointSize()));
+        calcEtSlOffset();
+        setEtValue(etSize, position.calcSize(), -(int)Math.log10(position.getInstrument().getMinPos()));
+        setEtValue(etPercentRisk, position.getAccount().getMaxRisk(),3);
+        setEtValue(etAmountRisk, position.calcMoneyAtRisk(), -(int)Math.log10(position.getAccount().getMinUnit()));
+        setEtValue(etBalance, position.getAccount().getBalance(), -(int) Math.log10(position.getAccount().getMinUnit()));
         //set focus listener
         etPrice.setOnFocusChangeListener(this);
         etSlOffset.setOnFocusChangeListener(this);
@@ -62,43 +111,103 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
         bCalculate.setOnClickListener(this);
     }
 
-    public void calcEtOffset() {
-        etSlOffset.setText(Integer.toString(position.getSlOffset()));
-        animateTextView(etSlOffset);
+    public void calcEtSlOffset() {
+        setEtValue(etSlOffset, (double) position.getSlOffset(), 0);
     }
 
     public void calcEtSize() {
-        etSize.setText(Double.toString(position.calcSize()));
-        animateTextView(etSize);
+        setEtValue(etSize, position.calcSize(), -(int)Math.log10(position.getInstrument().getMinPos()));
     }
 
     public void calcEtSl() {
         //new sl should be calculated
-        etSl.setText(Double.toString(position.getSl()));
-        animateTextView(etSl);
+        setEtValue(etSl, position.getSl(), -(int)Math.log10(position.getInstrument().getPointSize()));
+    }
+
+    public void calcEtAmountRisk() {
+        setEtValue(etAmountRisk, position.calcMoneyAtRisk(), -(int)Math.log10(position.getAccount().getMinUnit()));
+    }
+
+    public void calcEtPercentRisk() {
+        setEtValue(etPercentRisk, position.calcPercentRisk(),3);
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        //when we leave field we need to remember it
-        if (v == etPrice && !hasFocus) {
-            position.setOpenPrice(etPrice.getText().toString());
+        //when we leave field without calculation we restore previous
+        if (!hasFocus) {
+            if (v == etPrice) {
+                setEtValue((EditText)v, position.getOpenPrice(), -(int)Math.log10(position.getInstrument().getPointSize()));
+            }
+            if (v == etSlOffset) {
+                setEtValue((EditText) v, (double) position.getSlOffset(), 0);
+            }
+            if (v == etSl) {
+                setEtValue((EditText)v, position.getSl(), -(int)Math.log10(position.getInstrument().getPointSize()));
+            }
+            if (v == etPercentRisk) {
+                setEtValue((EditText)v, position.getAccount().getMaxRisk(),3);
+            }
+            if (v == etSize) {
+                setEtValue((EditText)v, position.getSize(), -(int)Math.log10(position.getInstrument().getMinPos()));
+            }
+            if (v == etAmountRisk) {
+                setEtValue((EditText)v, position.calcMoneyAtRisk(), -(int)Math.log10(position.getAccount().getMinUnit()));
+            }
+            if (v == etBalance) {
+                setEtValue((EditText) v, position.getAccount().getBalance(), -(int) Math.log10(position.getAccount().getMinUnit()));
+            }
         }
+        //it works but i'm not sure if i want it
+//        if (hasFocus) {
+//            View view = getCurrentFocus();
+//            if (view instanceof TextView) ((TextView)view).setText("");
+//        }
     }
 
     @Override
     public void onClick(View v) {
-        if (v==bCalculate) {
+        if (v == bCalculate) {
             if (etPrice.isFocused()) {
                 //user probably changed open price, so we take it
-                position.setOpenPrice(etPrice.getText().toString());
-                calcEtOffset();
+                position.setOpenPrice(getEtPriceValue());
+                calcEtSlOffset();
                 calcEtSize();
+                calcEtAmountRisk();
             }
             if (etSlOffset.isFocused()) {
-                position.setSlOffset(etSlOffset.getText().toString());
+                position.setSlOffset(getEtSlOffsetValue());
                 calcEtSl();
                 calcEtSize();
+                calcEtAmountRisk();
+            }
+            if (etSl.isFocused()) {
+                position.setSl(getEtSlValue());
+                calcEtSlOffset();
+                calcEtSize();
+                calcEtAmountRisk();
+            }
+            if (etPercentRisk.isFocused()) {
+                position.getAccount().setMaxRisk(getEtPercentRiskValue());
+                calcEtSize();
+                calcEtAmountRisk();
+            }
+            if (etSize.isFocused()) {
+                position.setSize(getEtSizeValue());
+                calcEtPercentRisk();
+                calcEtAmountRisk();
+            }
+            if (etAmountRisk.isFocused()) {
+                position.setAmountRisk(getEtAmountRiskValue());
+                calcEtSize();
+                calcEtPercentRisk();
+
+            }
+            if (etBalance.isFocused()) {
+                position.getAccount().setBalance(getEtBalanceValue());
+                calcEtSize();
+                calcEtAmountRisk();
+
             }
         }
     }
@@ -150,7 +259,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,OnCl
 
         AnimateCalculatedFields animateCalculatedFields = new AnimateCalculatedFields();
         //animateCalculatedFields.execute(textView);
-        animateCalculatedFields.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,textView);
+        animateCalculatedFields.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, textView);
         textView.setTag(animateCalculatedFields); //this is important for first lines of this methods
     }
 }

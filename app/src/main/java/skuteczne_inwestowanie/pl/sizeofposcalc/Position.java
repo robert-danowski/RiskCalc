@@ -3,6 +3,7 @@ package skuteczne_inwestowanie.pl.sizeofposcalc;
 /**
  * Created by teodor on 2014-11-10.
  * link between market and our account, we can choose moment and size of our position
+ * we take care of proper number of decimal places in this class not in activity
  */
 public class Position {
     private Instrument instrument;
@@ -44,9 +45,6 @@ public class Position {
     public void setOpenPrice(double openPrice) {
         this.openPrice = openPrice;
     }
-    public void setOpenPrice(String openPrice) {
-        this.openPrice = Double.parseDouble(openPrice);
-    }
 
     public double getSl() {
         return sl;
@@ -65,24 +63,37 @@ public class Position {
     }
 
     public int getSlOffset() {
-        return (int)Math.round((openPrice - sl) / instrument.getPointSize());
+        return (int) Math.round((openPrice - sl) / instrument.getPointSize());
     }
-    public void setSlOffset(int slOffset) {
-        this.sl=slOffset*instrument.getPointSize()+openPrice;
-    }
-    public void setSlOffset(String slOffset) {setSlOffset(String.valueOf(slOffset));}
 
-    public double oneLotRisk() {
-        return Math.abs(getSlOffset())* ConvertCurrency.calc(
+    public double setSlOffset(int slOffset) {
+        sl = openPrice - slOffset * instrument.getPointSize();
+        return sl;
+    }
+
+     public double calcOneLotRisk() {
+        return Math.abs(getSlOffset()) * ConvertCurrency.calc(
                 instrument.getLotValue(), instrument.getQuotedCurrency(), account.getCurrency()
         );
     }
 
     public double calcSize() {
         double MaxCapitalAtRisk = account.getMaxRisk() * account.getBalance();
-        size = Math.floor(MaxCapitalAtRisk / oneLotRisk() / instrument.getMinPos()) * instrument.getMinPos();
+        size = Math.floor(MaxCapitalAtRisk / calcOneLotRisk() / instrument.getMinPos()) * instrument.getMinPos();
         return size;
     }
 
+    public double calcMoneyAtRisk() {
+        return size * calcOneLotRisk();
+    }
+
+    public double calcPercentRisk() {
+        return calcMoneyAtRisk() / account.getBalance();
+    }
+
+    public void setAmountRisk(double amountRisk) {
+        account.setMaxRisk(amountRisk / account.getBalance());
+
+    }
 
 }

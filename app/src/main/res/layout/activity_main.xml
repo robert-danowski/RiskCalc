@@ -209,10 +209,28 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/bCalculate"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Calculate"/>
+        android:weightSum="100">
 
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:src="@android:drawable/arrow_down_float" />
+
+        <Button
+            android:id="@+id/bCalculate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:text="Calculate" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:src="@android:drawable/arrow_up_float" />
+    </LinearLayout>
 </LinearLayout>
