@@ -151,7 +151,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:gravity="center"
             android:text="update:"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -159,7 +159,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
+            android:layout_weight="60"
             android:gravity="center"
             android:text="balance:"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -167,7 +167,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:gravity="center"
             android:text="currency:"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -183,7 +183,7 @@
             android:id="@+id/ibDownload"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:maxHeight="10dip"
             android:src="@android:drawable/stat_sys_download" />
 
@@ -191,7 +191,7 @@
             android:id="@+id/etBalance"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
+            android:layout_weight="60"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
             android:text="10000"
@@ -202,7 +202,7 @@
             android:id="@+id/etBalanceCurrency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:gravity="center_horizontal"
             android:inputType="text"
             android:text="PLN"
@@ -215,22 +215,24 @@
         android:weightSum="100">
 
         <ImageButton
+            android:id="@+id/bDecrease"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:src="@android:drawable/arrow_down_float" />
 
         <Button
             android:id="@+id/bCalculate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
+            android:layout_weight="60"
             android:text="Calculate" />
 
         <ImageButton
+            android:id="@+id/bIncrease"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="25"
+            android:layout_weight="20"
             android:src="@android:drawable/arrow_up_float" />
     </LinearLayout>
 </LinearLayout>
