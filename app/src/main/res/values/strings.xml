@@ -2,9 +2,7 @@
 <resources>
 
     <string name="app_name">EURUSD</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_my">MyActivity</string>
-    <string name="title_activity_currency_list">CurrencyList</string>
+    <string name="title_activity_currency_list">List of currencies</string>
 
 </resources>

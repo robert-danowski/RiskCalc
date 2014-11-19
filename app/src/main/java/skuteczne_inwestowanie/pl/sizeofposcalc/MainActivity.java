@@ -9,16 +9,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.NumberFormat;
 import java.util.Locale;
 
 
-public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener {
+public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener,AdapterView.OnItemSelectedListener {
 
     private Position position;
 
@@ -29,6 +32,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
     private EditText etPercentRisk;
     private EditText etAmountRisk;
     private EditText etBalance;
+    private Spinner sCurrency;
     private Button bCalculate;
     private ImageButton ibDecrease;
     private ImageButton ibIncrease;
@@ -42,25 +46,19 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         position = new Position();
 
         initActivityFields();
+        initSpinner();
     }
 
-    void setEtValue(EditText et, Double value, int decimalPlaces) {
-        NumberFormat nf = NumberFormat.getInstance(Locale.ENGLISH);
-        nf.setGroupingUsed(false);
-        if (decimalPlaces <= 0) {
-            nf.setParseIntegerOnly(true);
-            nf.setMinimumIntegerDigits(-decimalPlaces);
-        } else {
-            nf.setParseIntegerOnly(false);
-            nf.setMaximumFractionDigits(decimalPlaces);
-            nf.setMinimumFractionDigits(decimalPlaces);
-        }
-        et.setText(nf.format(value));
-        animateTextView(et);
-    }
-
-    Double getEtValue(EditText et) {
-        return Double.parseDouble(et.getText().toString());
+    private void initSpinner() {
+        sCurrency = (Spinner) findViewById(R.id.sCurrency);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.account_currencies_list, android.R.layout.simple_spinner_item);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        sCurrency.setAdapter(adapter);
+        sCurrency.setOnItemSelectedListener(this);
     }
 
     private void initActivityFields() {
@@ -97,6 +95,26 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         ibDecrease.setOnClickListener(this);
         ibIncrease.setOnClickListener(this);
         ibDownload.setOnClickListener(this);
+    }
+
+
+    void setEtValue(EditText et, Double value, int decimalPlaces) {
+        NumberFormat nf = NumberFormat.getInstance(Locale.ENGLISH);
+        nf.setGroupingUsed(false);
+        if (decimalPlaces <= 0) {
+            nf.setParseIntegerOnly(true);
+            nf.setMinimumIntegerDigits(-decimalPlaces);
+        } else {
+            nf.setParseIntegerOnly(false);
+            nf.setMaximumFractionDigits(decimalPlaces);
+            nf.setMinimumFractionDigits(decimalPlaces);
+        }
+        et.setText(nf.format(value));
+        animateTextView(et);
+    }
+
+    Double getEtValue(EditText et) {
+        return Double.parseDouble(et.getText().toString());
     }
 
     private void initValues() {
@@ -204,13 +222,24 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         }
         if ((v == ibDecrease || v == ibIncrease) && getCurrentFocus() instanceof EditText)
             changeEt(v);
-        if (v==ibDownload) {
+        if (v == ibDownload) {
             QuotationDownloader qd = new QuotationDownloader();
-            qd.updateET(this,etPrice,position.getInstrument());
+            qd.updateET(this, etPrice, position.getInstrument());
 
         }
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (parent==sCurrency) {
+           this.position.getAccount().setCurrency(((TextView)view).getText().toString());
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
     //invoked after sure that edittext is focused
     private void changeEt(View v) {
         EditText currentEt = (EditText) getCurrentFocus();
@@ -294,7 +323,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, CurrencyList.class));
+            Intent intent = new Intent(this, CurrencyListActivity.class);
+            //intent.putExtra
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

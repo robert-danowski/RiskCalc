@@ -9,6 +9,13 @@ public class Account {
     private double maxRisk; //in percents
     private double minUnit; //for most currencies it is 0.01
 
+    public Account(String c, double b, double mR, double mU) {
+        currency=c;
+        balance=b;
+        maxRisk = mR;
+        minUnit = mU;
+    }
+
     public Account() {
         //temporary
         currency = "PLN";

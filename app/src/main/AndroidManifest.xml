@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CurrencyList"
+            android:name=".CurrencyListActivity"
             android:label="@string/title_activity_currency_list" >
         </activity>
     </application>

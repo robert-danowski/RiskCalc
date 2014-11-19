@@ -10,6 +10,14 @@ public class Instrument {
     private double tickValue; //in quotedCurrency (for EURUSD in USD)
     private double minPos; //the smallest position in lots (in admiral markets it is 0.01 lots for eurusd)
 
+    public Instrument(String bC, String qC, double tS, double tV, double mP) {
+        baseCurrency = bC;
+        quotedCurrency = qC;
+        tickSize = tS;
+        tickValue = tV;
+        minPos = mP;
+    }
+
     public Instrument()    {
         baseCurrency = "EUR";
         quotedCurrency = "USD";

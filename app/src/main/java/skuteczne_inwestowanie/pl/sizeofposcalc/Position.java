@@ -6,13 +6,20 @@ package skuteczne_inwestowanie.pl.sizeofposcalc;
  * we take care of proper number of decimal places in this class not in activity
  */
 public class Position {
-    private Instrument instrument;
     private Account account;
+    private Instrument instrument;
     private double openPrice; //open price
     private double sl; //stop loss
     private double size; //size in lots
 
-    //temporary
+    public Position(Account acc,Instrument ins,double oP, double stopLoss,double sizePos) {
+        instrument = ins;
+        account = acc;
+
+        openPrice = oP;
+        sl = stopLoss;
+        size=sizePos;
+    }
     public Position() {
         instrument = new Instrument();
         account = new Account();

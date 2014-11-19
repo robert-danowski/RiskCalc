@@ -98,9 +98,8 @@
         android:weightSum="100">
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="35"
-            android:maxHeight="10dip"
             android:src="@android:drawable/stat_sys_download"/>
         <EditText
             android:id="@+id/etCurrencyRate"
