@@ -6,17 +6,15 @@ package skuteczne_inwestowanie.pl.sizeofposcalc;
 public class Instrument {
     private String baseCurrency; //for stocks name of stock
     private String quotedCurrency;
-    private double price; //how much quoted Currency you should give for 1 base currency
-    private double pointSize; //0.0001 for EURUSD
-    private double lotValue; //in quotedCurrency (for EURUSD in USD)
+    private double tickSize; //0.0001 for EURUSD
+    private double tickValue; //in quotedCurrency (for EURUSD in USD)
     private double minPos; //the smallest position in lots (in admiral markets it is 0.01 lots for eurusd)
 
     public Instrument()    {
         baseCurrency = "EUR";
         quotedCurrency = "USD";
-        price = 1.2486;
-        pointSize = 0.0001;
-        lotValue = 10;
+        tickSize = 0.0001;
+        tickValue = 10;
         minPos=0.01;
     }
 
@@ -36,28 +34,20 @@ public class Instrument {
         this.quotedCurrency = quotedCurrency;
     }
 
-    public double getPointSize() {
-        return pointSize;
+    public double getTickSize() {
+        return tickSize;
     }
 
-    public void setPointSize(double pointSize) {
-        this.pointSize = pointSize;
+    public void setTickSize(double tickSize) {
+        this.tickSize = tickSize;
     }
 
-    public double getPrice() {
-        return price;
+    public double getTickValue() {
+        return tickValue;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public double getLotValue() {
-        return lotValue;
-    }
-
-    public void setLotValue(double lotValue) {
-        this.lotValue = lotValue;
+    public void setTickValue(double tickValue) {
+        this.tickValue = tickValue;
     }
 
     public double getMinPos() {

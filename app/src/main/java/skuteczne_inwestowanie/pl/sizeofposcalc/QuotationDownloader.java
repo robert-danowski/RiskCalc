@@ -48,7 +48,7 @@ public class QuotationDownloader {
 
         @Override
         protected void onPostExecute(Double aDouble) {
-            mainActivity.setEtValue(editText, aDouble, -(int) Math.log10(instrument.getPointSize()));
+            mainActivity.setEtValue(editText, aDouble, -(int) Math.log10(instrument.getTickSize()));
         }
     }
 

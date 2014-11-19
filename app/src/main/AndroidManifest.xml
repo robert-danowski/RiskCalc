@@ -19,6 +19,10 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".CurrencyList"
+            android:label="@string/title_activity_currency_list" >
+        </activity>
     </application>
 
 </manifest>

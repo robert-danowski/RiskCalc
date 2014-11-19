@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="action_list">
+    <string-array name="cross_currencies_list">
         <item>EURUSD</item>
         <item>USDRUB</item>
         <item>XAUUSD</item>
+    </string-array>
+
+    <string-array name="account_currencies_list">
+        <item>PLN</item>
+        <item>USD</item>
+        <item>EUR</item>
     </string-array>
 </resources>

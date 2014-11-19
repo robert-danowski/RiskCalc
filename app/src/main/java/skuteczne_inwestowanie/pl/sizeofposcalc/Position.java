@@ -17,8 +17,8 @@ public class Position {
         instrument = new Instrument();
         account = new Account();
 
-        openPrice = instrument.getPrice();
-        sl = openPrice - 20 * instrument.getPointSize();
+        openPrice = 1.2486;
+        sl = openPrice - 20 * instrument.getTickSize();
         size = instrument.getMinPos();
     }
 
@@ -63,17 +63,17 @@ public class Position {
     }
 
     public int getSlOffset() {
-        return (int) Math.round((openPrice - sl) / instrument.getPointSize());
+        return (int) Math.round((openPrice - sl) / instrument.getTickSize());
     }
 
     public double setSlOffset(int slOffset) {
-        sl = openPrice - slOffset * instrument.getPointSize();
+        sl = openPrice - slOffset * instrument.getTickSize();
         return sl;
     }
 
      public double calcOneLotRisk() {
         return Math.abs(getSlOffset()) * ConvertCurrency.calc(
-                instrument.getLotValue(), instrument.getQuotedCurrency(), account.getCurrency()
+                instrument.getTickValue(), instrument.getQuotedCurrency(), account.getCurrency()
         );
     }
 

@@ -183,9 +183,8 @@
         <ImageButton
             android:id="@+id/ibDownload"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="20"
-            android:maxHeight="10dip"
             android:src="@android:drawable/stat_sys_download" />
 
         <EditText
@@ -199,6 +198,11 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="20"
+            ></Spinner>
         <EditText
             android:id="@+id/etBalanceCurrency"
             android:layout_width="0dp"

@@ -1,6 +1,7 @@
 package skuteczne_inwestowanie.pl.sizeofposcalc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,16 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.*;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.security.cert.PolicyQualifierInfo;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -104,8 +100,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
     }
 
     private void initValues() {
-        setEtValue(etPrice, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getPointSize()));
-        setEtValue(etSl, position.getSl(), -(int) Math.log10(position.getInstrument().getPointSize()));
+        setEtValue(etPrice, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getTickSize()));
+        setEtValue(etSl, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
         calcEtSlOffset();
         setEtValue(etSize, position.calcSize(), -(int) Math.log10(position.getInstrument().getMinPos()));
         setEtValue(etPercentRisk, position.getAccount().getMaxRisk(), 3);
@@ -123,7 +119,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
 
     public void calcEtSl() {
         //new sl should be calculated
-        setEtValue(etSl, position.getSl(), -(int) Math.log10(position.getInstrument().getPointSize()));
+        setEtValue(etSl, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
     }
 
     public void calcEtAmountRisk() {
@@ -139,13 +135,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         //when we leave field without calculation we restore previous
         if (!hasFocus) {
             if (v == etPrice) {
-                setEtValue((EditText) v, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getPointSize()));
+                setEtValue((EditText) v, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getTickSize()));
             }
             if (v == etSlOffset) {
                 setEtValue((EditText) v, (double) position.getSlOffset(), 0);
             }
             if (v == etSl) {
-                setEtValue((EditText) v, position.getSl(), -(int) Math.log10(position.getInstrument().getPointSize()));
+                setEtValue((EditText) v, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
             }
             if (v == etPercentRisk) {
                 setEtValue((EditText) v, position.getAccount().getMaxRisk(), 3);
@@ -221,7 +217,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         double prevValue = getEtValue(currentEt);
         double change = 0;
         if (currentEt == etPrice || currentEt == etSl)
-            change = position.getInstrument().getPointSize();
+            change = position.getInstrument().getTickSize();
         if (currentEt == etSlOffset) change = 1;
         if (currentEt == etSize) change = position.getInstrument().getMinPos();
         if (currentEt == etPercentRisk) change = 0.001;
@@ -298,6 +294,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, CurrencyList.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
