@@ -1,6 +1,7 @@
 package skuteczne_inwestowanie.pl.sizeofposcalc;
 
 import android.os.AsyncTask;
+import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +12,10 @@ import java.net.URL;
  * Created by teodor on 2014-11-17.
  */
 public class QuotationDownloader {
+
+    private MainActivity mainActivity;
+    private EditText editText;
+    private Instrument instrument;
 
     class Task extends AsyncTask<String, Void, Double> {
 
@@ -25,11 +30,12 @@ public class QuotationDownloader {
                         new InputStreamReader(stooq.openStream()));
 
                 String inputLine;
+                String[] tokens = {""};
                 while ((inputLine = in.readLine()) != null)
-                    ;
 //                    Symbol,Data,Czas,Otwarcie,Najwyzszy,Najnizszy,Zamkniecie
+                    tokens = inputLine.split(",");
 
-                String[] tokens = inputLine.split(",");
+
                 result = Double.parseDouble(tokens[6]);
 
                 in.close();
@@ -39,11 +45,17 @@ public class QuotationDownloader {
             }
             return result;
         }
+
+        @Override
+        protected void onPostExecute(Double aDouble) {
+            mainActivity.setEtValue(editText, aDouble, -(int) Math.log10(instrument.getPointSize()));
+        }
     }
 
-
-
-    public void test() {
+    public void updateET(MainActivity ma, EditText et, Instrument ins) {
+        mainActivity = ma;
+        editText = et;
+        instrument = ins;
         Task task = new Task();
         task.execute("EURUSD");
     }
