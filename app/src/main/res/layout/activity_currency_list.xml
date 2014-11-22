@@ -16,7 +16,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="35"
             android:gravity="center"
-            android:text="tick size:"
+            android:text="@string/tick_size"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="30"
             android:gravity="center"
-            android:text="tick value:"
+            android:text="@string/tick_value"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="35"
             android:gravity="center"
-            android:text="min pos:"
+            android:text="@string/min_pos"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
@@ -49,7 +49,7 @@
             android:layout_weight="35"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="0.0001"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText
@@ -59,7 +59,7 @@
             android:layout_weight="30"
             android:gravity="center_horizontal"
             android:inputType="number"
-            android:text="10"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
 
@@ -70,7 +70,7 @@
             android:layout_weight="35"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="0.01"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
     <LinearLayout
@@ -88,7 +88,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="30"
             android:gravity="center"
-            android:text="USDPLN rate:"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
@@ -100,7 +100,8 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="35"
-            android:src="@android:drawable/stat_sys_download"/>
+            android:src="@android:drawable/stat_sys_download"
+            android:contentDescription="@string/download_rate_content_description" />
         <EditText
             android:id="@+id/etCurrencyRate"
             android:layout_width="0dp"
@@ -116,11 +117,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="35"
-            android:text="Confirm" />
+            android:text="@string/confirm" />
 
     </LinearLayout>
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"/>
 </LinearLayout>

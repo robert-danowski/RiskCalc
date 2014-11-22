@@ -26,7 +26,7 @@ public class CurrencyListActivity extends Activity {
         //temporary
 
         //tvCurrencyRate = (TextView)findViewById(R.id.tvCurrencyRate);
-        //tvCurrencyRate.setText();
+        tvCurrencyRate.setText("USDPLN rate:");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

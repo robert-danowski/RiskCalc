@@ -14,8 +14,13 @@
     <string name="calculate">Calculate</string>
     <string name="balance">balance:</string>
     <string name="currency">currency:</string>
-    <string name="updateContentDescription">download</string>
-    <string name="decreaseContentDescription">decrease</string>
-    <string name="increaseContentDescription">increase</string>
+    <string name="update_content_description">download</string>
+    <string name="decrease_content_description">decrease</string>
+    <string name="increase_content_description">increase</string>
+    <string name="tick_size">tick size:</string>
+    <string name="tick_value">tick value:</string>
+    <string name="min_pos">min pos:</string>
+    <string name="confirm">Confirm</string>
+    <string name="download_rate_content_description">download rate</string>
 
 </resources>

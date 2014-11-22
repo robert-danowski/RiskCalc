@@ -186,7 +186,7 @@
             android:layout_height="fill_parent"
             android:layout_weight="20"
             android:src="@android:drawable/stat_sys_download"
-            android:contentDescription="@string/updateContentDescription" />
+            android:contentDescription="@string/update_content_description" />
 
         <EditText
             android:id="@+id/etBalance"
@@ -217,7 +217,7 @@
             android:layout_height="match_parent"
             android:layout_weight="20"
             android:src="@android:drawable/arrow_down_float"
-            android:contentDescription="@string/decreaseContentDescription" />
+            android:contentDescription="@string/decrease_content_description" />
 
         <Button
             android:id="@+id/bCalculate"
@@ -232,7 +232,7 @@
             android:layout_height="match_parent"
             android:layout_weight="20"
             android:src="@android:drawable/arrow_up_float"
-            android:contentDescription="@string/increaseContentDescription" />
+            android:contentDescription="@string/increase_content_description" />
     </LinearLayout>
 
 </LinearLayout>
