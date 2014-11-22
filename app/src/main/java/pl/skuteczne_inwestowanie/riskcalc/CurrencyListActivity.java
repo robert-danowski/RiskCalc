@@ -13,6 +13,10 @@ import java.util.List;
 
 public class CurrencyListActivity extends Activity {
 
+    EditText etTickSize;
+    EditText etTickValue;
+    EditText etMinPos;
+
     TextView tvCurrencyRate;
     EditText etCurrencyRate;
 
@@ -23,13 +27,23 @@ public class CurrencyListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency_list);
 
-        //temporary
+        initActivityFields();
+    }
 
+    private void initActivityFields() {
+        etTickSize = (EditText) findViewById(R.id.etTickSize);
+        etTickValue = (EditText) findViewById(R.id.etTickValue);
+        etMinPos = (EditText) findViewById(R.id.etMinPos);
         tvCurrencyRate = (TextView)findViewById(R.id.tvCurrencyRate);
-        tvCurrencyRate.setText("USDPLN rate:");
         etCurrencyRate = (EditText) findViewById(R.id.etCurrencyRate);
+        //temporary
+        etTickSize.setText("0.0001");
+        etTickValue.setText("10");
+        etMinPos.setText("0.01");
+        tvCurrencyRate.setText("USDPLN rate:");
         etCurrencyRate.setText("3.3947");
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

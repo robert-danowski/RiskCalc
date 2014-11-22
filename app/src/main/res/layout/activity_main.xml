@@ -206,7 +206,7 @@
         android:weightSum="100">
 
         <ImageButton
-            android:id="@+id/bDecrease"
+            android:id="@+id/ibDecrease"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="20"
@@ -221,7 +221,7 @@
             android:text="@string/calculate" />
 
         <ImageButton
-            android:id="@+id/bIncrease"
+            android:id="@+id/ibIncrease"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="20"

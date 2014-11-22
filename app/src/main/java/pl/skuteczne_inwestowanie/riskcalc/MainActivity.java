@@ -21,8 +21,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 
-
-public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener,AdapterView.OnItemSelectedListener {
+public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener, AdapterView.OnItemSelectedListener {
 
     private Position position;
 
@@ -77,8 +76,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         etAmountRisk = (EditText) findViewById(R.id.etAmountRisk);
         etBalance = (EditText) findViewById(R.id.etBalance);
         bCalculate = (Button) findViewById(R.id.bCalculate);
-        ibDecrease = (ImageButton) findViewById(R.id.bDecrease);
-        ibIncrease = (ImageButton) findViewById(R.id.bIncrease);
+        ibDecrease = (ImageButton) findViewById(R.id.ibDecrease);
+        ibIncrease = (ImageButton) findViewById(R.id.ibIncrease);
         ibDownload = (ImageButton) findViewById(R.id.ibDownload);
     }
 
@@ -154,25 +153,32 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         //when we leave field without calculation we restore previous
         if (!hasFocus) {
             if (v == etPrice) {
-                setEtValue((EditText) v, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getTickSize()));
+                //setEtValue((EditText) v, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getTickSize()));
+                position.setOpenPrice(getEtValue((EditText)v));
             }
             if (v == etSlOffset) {
-                setEtValue((EditText) v, (double) position.getSlOffset(), 0);
+                //setEtValue((EditText) v, (double) position.getSlOffset(), 0);
+                position.setSlOffset(getEtValue((EditText)v).intValue());
             }
             if (v == etSl) {
-                setEtValue((EditText) v, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
+                //setEtValue((EditText) v, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
+                position.setSl(getEtValue((EditText)v));
             }
             if (v == etPercentRisk) {
-                setEtValue((EditText) v, position.getAccount().getMaxRisk(), 3);
+                //setEtValue((EditText) v, position.getAccount().getMaxRisk(), 3);
+                position.getAccount().setMaxRisk(getEtValue((EditText)v));
             }
             if (v == etSize) {
-                setEtValue((EditText) v, position.getSize(), -(int) Math.log10(position.getInstrument().getMinPos()));
+                //setEtValue((EditText) v, position.getSize(), -(int) Math.log10(position.getInstrument().getMinPos()));
+                position.setSize(getEtValue((EditText)v));
             }
             if (v == etAmountRisk) {
-                setEtValue((EditText) v, position.calcMoneyAtRisk(), -(int) Math.log10(position.getAccount().getMinUnit()));
+                //setEtValue((EditText) v, position.calcMoneyAtRisk(), -(int) Math.log10(position.getAccount().getMinUnit()));
+                position.setAmountRisk(getEtValue((EditText)v));
             }
             if (v == etBalance) {
-                setEtValue((EditText) v, position.getAccount().getBalance(), -(int) Math.log10(position.getAccount().getMinUnit()));
+                //setEtValue((EditText) v, position.getAccount().getBalance(), -(int) Math.log10(position.getAccount().getMinUnit()));
+                position.getAccount().setBalance(getEtValue((EditText)v));
             }
         }
     }
@@ -232,8 +238,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent==sCurrency) {
-           this.position.getAccount().setCurrency(((TextView)view).getText().toString());
+        if (parent == sCurrency) {
+            this.position.getAccount().setCurrency(((TextView) view).getText().toString());
         }
     }
 
@@ -241,6 +247,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
     //invoked after sure that edittext is focused
     private void changeEt(View v) {
         EditText currentEt = (EditText) getCurrentFocus();
