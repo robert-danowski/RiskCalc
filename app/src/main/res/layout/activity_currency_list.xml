@@ -109,7 +109,7 @@
             android:layout_weight="30"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="3.3947"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge"
             />
         <Button

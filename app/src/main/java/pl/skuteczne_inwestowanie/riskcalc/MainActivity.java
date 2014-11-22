@@ -20,7 +20,6 @@ import android.widget.TextView;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import skuteczne_inwestowanie.pl.riskcalc.R;
 
 
 public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener,AdapterView.OnItemSelectedListener {

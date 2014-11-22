@@ -5,16 +5,16 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
-
 import java.util.List;
 
-import skuteczne_inwestowanie.pl.riskcalc.R;
 
 
 public class CurrencyListActivity extends Activity {
 
     TextView tvCurrencyRate;
+    EditText etCurrencyRate;
 
     List<Position> positionsList;
 
@@ -25,14 +25,17 @@ public class CurrencyListActivity extends Activity {
 
         //temporary
 
-        //tvCurrencyRate = (TextView)findViewById(R.id.tvCurrencyRate);
+        tvCurrencyRate = (TextView)findViewById(R.id.tvCurrencyRate);
         tvCurrencyRate.setText("USDPLN rate:");
+        etCurrencyRate = (EditText) findViewById(R.id.etCurrencyRate);
+        etCurrencyRate.setText("3.3947");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.currency_list, menu);
         ActionBar actionBar = getActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         return true;
     }

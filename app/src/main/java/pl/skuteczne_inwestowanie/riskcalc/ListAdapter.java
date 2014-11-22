@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import skuteczne_inwestowanie.pl.riskcalc.R;
-
 /**
  * Created by teodor on 2014-11-19.
  */

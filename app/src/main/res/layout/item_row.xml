@@ -8,21 +8,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="EUR"
+        android:text=""
         android:id="@+id/tvBaseCurrency" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="/"
+        android:text="@string/slash"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="USD"
+        android:text=""
         android:id="@+id/tvQuotedCurrency"
         android:layout_gravity="center_horizontal" />
 

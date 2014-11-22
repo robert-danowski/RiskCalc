@@ -22,5 +22,6 @@
     <string name="min_pos">min pos:</string>
     <string name="confirm">Confirm</string>
     <string name="download_rate_content_description">download rate</string>
+    <string name="slash">/</string>
 
 </resources>
