@@ -1,14 +1,15 @@
-package skuteczne_inwestowanie.pl.sizeofposcalc;
+package pl.skuteczne_inwestowanie.riskcalc;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import java.util.List;
+
+import skuteczne_inwestowanie.pl.riskcalc.R;
 
 
 public class CurrencyListActivity extends Activity {

@@ -4,5 +4,18 @@
     <string name="app_name">EURUSD</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_currency_list">List of currencies</string>
+    <string name="price">price:</string>
+    <string name="points_at_risk">points at risk:</string>
+    <string name="stop_loss">sl:</string>
+    <string name="max_percent_risk">max % risk:</string>
+    <string name="lots">lots</string>
+    <string name="money_at_risk">money at risk:</string>
+    <string name="update">update:</string>
+    <string name="calculate">Calculate</string>
+    <string name="balance">balance:</string>
+    <string name="currency">currency:</string>
+    <string name="updateContentDescription">download</string>
+    <string name="decreaseContentDescription">decrease</string>
+    <string name="increaseContentDescription">increase</string>
 
 </resources>

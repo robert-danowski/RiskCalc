@@ -1,4 +1,4 @@
-package skuteczne_inwestowanie.pl.sizeofposcalc;
+package pl.skuteczne_inwestowanie.riskcalc;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,4 +1,4 @@
-package skuteczne_inwestowanie.pl.sizeofposcalc;
+package pl.skuteczne_inwestowanie.riskcalc;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import skuteczne_inwestowanie.pl.riskcalc.R;
 
 
 public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener,AdapterView.OnItemSelectedListener {

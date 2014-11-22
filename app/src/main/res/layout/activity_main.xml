@@ -15,7 +15,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="35"
             android:gravity="center"
-            android:text="price:"
+            android:text="@string/price"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="30"
             android:gravity="center"
-            android:text="points at risk:"
+            android:text="@string/points_at_risk"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="35"
             android:gravity="center"
-            android:text="sl:"
+            android:text="@string/stop_loss"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
@@ -48,7 +48,7 @@
             android:layout_weight="35"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="1.2486"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText
@@ -58,7 +58,7 @@
             android:layout_weight="30"
             android:gravity="center_horizontal"
             android:inputType="numberSigned"
-            android:text="10"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 
@@ -69,7 +69,7 @@
             android:layout_weight="35"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="1.2476"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
 
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="35"
             android:gravity="center"
-            android:text="max % risk:"
+            android:text="@string/max_percent_risk"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -92,7 +92,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="30"
             android:gravity="center"
-            android:text="lots"
+            android:text="@string/lots"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="35"
             android:gravity="center"
-            android:text="money at risk:"
+            android:text="@string/money_at_risk"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
@@ -117,7 +117,7 @@
             android:layout_weight="35"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="0.02"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText
@@ -127,7 +127,7 @@
             android:layout_weight="30"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="0.01"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 
@@ -138,7 +138,7 @@
             android:layout_weight="35"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="0.02"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </LinearLayout>
@@ -154,7 +154,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="20"
             android:gravity="center"
-            android:text="update:"
+            android:text="@string/update"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -162,7 +162,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="60"
             android:gravity="center"
-            android:text="balance:"
+            android:text="@string/balance"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -170,7 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="20"
             android:gravity="center"
-            android:text="currency:"
+            android:text="@string/currency"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
@@ -185,7 +185,8 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="20"
-            android:src="@android:drawable/stat_sys_download" />
+            android:src="@android:drawable/stat_sys_download"
+            android:contentDescription="@string/updateContentDescription" />
 
         <EditText
             android:id="@+id/etBalance"
@@ -194,7 +195,7 @@
             android:layout_weight="60"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-            android:text="10000"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 
@@ -203,16 +204,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="20"
-            ></Spinner>
-        <EditText
-            android:id="@+id/etBalanceCurrency"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:gravity="center_horizontal"
-            android:inputType="text"
-            android:text="PLN"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -224,21 +216,23 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="20"
-            android:src="@android:drawable/arrow_down_float" />
+            android:src="@android:drawable/arrow_down_float"
+            android:contentDescription="@string/decreaseContentDescription" />
 
         <Button
             android:id="@+id/bCalculate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="60"
-            android:text="Calculate" />
+            android:text="@string/calculate" />
 
         <ImageButton
             android:id="@+id/bIncrease"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="20"
-            android:src="@android:drawable/arrow_up_float" />
+            android:src="@android:drawable/arrow_up_float"
+            android:contentDescription="@string/increaseContentDescription" />
     </LinearLayout>
 
 </LinearLayout>

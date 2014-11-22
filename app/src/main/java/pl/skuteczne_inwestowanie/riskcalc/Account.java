@@ -1,4 +1,4 @@
-package skuteczne_inwestowanie.pl.sizeofposcalc;
+package pl.skuteczne_inwestowanie.riskcalc;
 
 /**
  * Created by trevny on 2014-11-10.
