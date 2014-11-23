@@ -1,12 +1,14 @@
 package pl.skuteczne_inwestowanie.riskcalc;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.*;
 import android.widget.AdapterView;
@@ -21,7 +23,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 
-public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener, AdapterView.OnItemSelectedListener {
+public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener, AdapterView.OnItemSelectedListener, OnTouchListener {
 
     private Position position;
 
@@ -92,9 +94,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         etBalance.setOnFocusChangeListener(this);
         //set onclick listeners
         bCalculate.setOnClickListener(this);
-        ibDecrease.setOnClickListener(this);
-        ibIncrease.setOnClickListener(this);
+        //ibDecrease.setOnClickListener(this);
+        //ibIncrease.setOnClickListener(this);
         ibDownload.setOnClickListener(this);
+        ibDecrease.setOnTouchListener(this);
+        ibIncrease.setOnTouchListener(this);
     }
 
 
@@ -148,37 +152,94 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         setEtValue(etPercentRisk, position.calcPercentRisk(), 3);
     }
 
+    //    private class AnimateCalculatedFields extends AsyncTask<TextView, Integer, Void> {
+//
+//        TextView animatedTextView;
+//
+//        @Override
+//        protected Void doInBackground(TextView... params) {
+//
+//            animatedTextView = params[0];
+//
+//            for (int i = 0; i < 255; i += 2) {
+//                sleepAndPublish(i);
+//            }
+//            for (int i = 255; i >= 0; i -= 2) {
+//                sleepAndPublish(i);
+//            }
+//
+//            return null;
+//        }
+//
+//        private void sleepAndPublish(int i) {
+//            try {
+//                Thread.sleep(2);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            publishProgress(i);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Integer... values) {
+//            animatedTextView.setTextColor(Color.rgb(0, values[0], 0));
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            animatedTextView.setTextColor(Color.BLACK);
+//        }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(this, CurrencyListActivity.class);
+            //intent.putExtra
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         //when we leave field without calculation we restore previous
         if (!hasFocus) {
             if (v == etPrice) {
                 //setEtValue((EditText) v, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getTickSize()));
-                position.setOpenPrice(getEtValue((EditText)v));
+                position.setOpenPrice(getEtValue((EditText) v));
             }
             if (v == etSlOffset) {
                 //setEtValue((EditText) v, (double) position.getSlOffset(), 0);
-                position.setSlOffset(getEtValue((EditText)v).intValue());
+                position.setSlOffset(getEtValue((EditText) v).intValue());
             }
             if (v == etSl) {
                 //setEtValue((EditText) v, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
-                position.setSl(getEtValue((EditText)v));
+                position.setSl(getEtValue((EditText) v));
             }
             if (v == etPercentRisk) {
                 //setEtValue((EditText) v, position.getAccount().getMaxRisk(), 3);
-                position.getAccount().setMaxRisk(getEtValue((EditText)v));
+                position.getAccount().setMaxRisk(getEtValue((EditText) v));
             }
             if (v == etSize) {
                 //setEtValue((EditText) v, position.getSize(), -(int) Math.log10(position.getInstrument().getMinPos()));
-                position.setSize(getEtValue((EditText)v));
+                position.setSize(getEtValue((EditText) v));
             }
             if (v == etAmountRisk) {
                 //setEtValue((EditText) v, position.calcMoneyAtRisk(), -(int) Math.log10(position.getAccount().getMinUnit()));
-                position.setAmountRisk(getEtValue((EditText)v));
+                position.setAmountRisk(getEtValue((EditText) v));
             }
             if (v == etBalance) {
                 //setEtValue((EditText) v, position.getAccount().getBalance(), -(int) Math.log10(position.getAccount().getMinUnit()));
-                position.getAccount().setBalance(getEtValue((EditText)v));
+                position.getAccount().setBalance(getEtValue((EditText) v));
             }
         }
     }
@@ -248,11 +309,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
 
     }
 
-    //invoked after sure that edittext is focused
-    private void changeEt(View v) {
+    //you can invoke it after sure that edittext is focused
+    public void changeEt(View v) {
         EditText currentEt = (EditText) getCurrentFocus();
         double prevValue = getEtValue(currentEt);
         double change = 0;
+
         if (currentEt == etPrice || currentEt == etSl)
             change = position.getInstrument().getTickSize();
         if (currentEt == etSlOffset) change = 1;
@@ -265,79 +327,56 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         if (v == ibIncrease) setEtValue(currentEt, prevValue + change, -(int) Math.log10(change));
     }
 
-    private class AnimateCalculatedFields extends AsyncTask<TextView, Integer, Void> {
+//    }
 
-        TextView animatedTextView;
-
-        @Override
-        protected Void doInBackground(TextView... params) {
-
-            animatedTextView = params[0];
-
-            for (int i = 0; i < 255; i += 2) {
-                sleepAndPublish(i);
-            }
-            for (int i = 255; i >= 0; i -= 2) {
-                sleepAndPublish(i);
-            }
-
-            return null;
-        }
-
-        private void sleepAndPublish(int i) {
-            try {
-                Thread.sleep(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            publishProgress(i);
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            animatedTextView.setTextColor(Color.rgb(0, values[0], 0));
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            animatedTextView.setTextColor(Color.BLACK);
-        }
-    }
 
     private void animateTextView(TextView textView) {
-        AnimateCalculatedFields animateCalculatedFieldsPrev = (AnimateCalculatedFields) textView.getTag();
-        if (animateCalculatedFieldsPrev != null) {
-            animateCalculatedFieldsPrev.cancel(true);
-        }
+//        AnimateCalculatedFields animateCalculatedFieldsPrev = (AnimateCalculatedFields) textView.getTag();
+//        if (animateCalculatedFieldsPrev != null) {
+//            animateCalculatedFieldsPrev.cancel(true);
+//        }
+//
+//        AnimateCalculatedFields animateCalculatedFields = new AnimateCalculatedFields();
+//        //animateCalculatedFields.execute(textView);
+//        animateCalculatedFields.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, textView);
+//        textView.setTag(animateCalculatedFields); //this is important for first lines of this methods
 
-        AnimateCalculatedFields animateCalculatedFields = new AnimateCalculatedFields();
-        //animateCalculatedFields.execute(textView);
-        animateCalculatedFields.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, textView);
-        textView.setTag(animateCalculatedFields); //this is important for first lines of this methods
+        ObjectAnimator animator1 = ObjectAnimator.ofInt(textView, "textColor", Color.BLACK, Color.GREEN);
+        ObjectAnimator animator2 = ObjectAnimator.ofInt(textView, "textColor", Color.GREEN, Color.BLACK);
+        animator1.setDuration(250);
+        animator2.setDuration(750);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playSequentially(animator1, animator2);
+        set.start();
     }
 
+
+    IncrementationThread incrementationThread;
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    public boolean onTouch(View v, MotionEvent event) {
+
+        View currentView = getCurrentFocus();
+
+        if (currentView instanceof EditText && v instanceof ImageButton) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (currentView.getTag() instanceof IncrementationThread) {
+                    incrementationThread.setSuspended(true);
+                }
+                incrementationThread = new IncrementationThread(this, (ImageButton) v);
+                currentView.setTag(incrementationThread);
+                incrementationThread.setSuspended(false);
+                incrementationThread.start();
+            }
+
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                incrementationThread.setSuspended(true);
+            }
+        }
+        return false;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, CurrencyListActivity.class);
-            //intent.putExtra
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
 
 
