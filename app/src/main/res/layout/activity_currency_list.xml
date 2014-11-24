@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -60,8 +62,7 @@
             android:gravity="center_horizontal"
             android:inputType="number"
             android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <EditText
             android:id="@+id/etMinPos"
@@ -73,14 +74,17 @@
             android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="100">
+
         <Space
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="35"/>
+            android:layout_weight="35" />
+
         <TextView
             android:id="@+id/tvCurrencyRate"
             android:layout_width="0dp"
@@ -92,16 +96,19 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="100">
+
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="35"
-            android:src="@android:drawable/stat_sys_download"
-            android:contentDescription="@string/download_rate_content_description" />
+            android:contentDescription="@string/download_rate_content_description"
+            android:src="@android:drawable/stat_sys_download" />
+
         <EditText
             android:id="@+id/etCurrencyRate"
             android:layout_width="0dp"
@@ -110,8 +117,8 @@
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
             android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
         <Button
             android:id="@+id/bConfirm"
             android:layout_width="0dp"
@@ -120,8 +127,9 @@
             android:text="@string/confirm" />
 
     </LinearLayout>
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 </LinearLayout>

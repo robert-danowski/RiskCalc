@@ -40,6 +40,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
     private ImageButton ibIncrease;
     private ImageButton ibDownload;
 
+    IncrementationThread incrementationThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,45 +154,6 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         setEtValue(etPercentRisk, position.calcPercentRisk(), 3);
     }
 
-    //    private class AnimateCalculatedFields extends AsyncTask<TextView, Integer, Void> {
-//
-//        TextView animatedTextView;
-//
-//        @Override
-//        protected Void doInBackground(TextView... params) {
-//
-//            animatedTextView = params[0];
-//
-//            for (int i = 0; i < 255; i += 2) {
-//                sleepAndPublish(i);
-//            }
-//            for (int i = 255; i >= 0; i -= 2) {
-//                sleepAndPublish(i);
-//            }
-//
-//            return null;
-//        }
-//
-//        private void sleepAndPublish(int i) {
-//            try {
-//                Thread.sleep(2);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            publishProgress(i);
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Integer... values) {
-//            animatedTextView.setTextColor(Color.rgb(0, values[0], 0));
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            animatedTextView.setTextColor(Color.BLACK);
-//        }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -204,6 +167,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
             Intent intent = new Intent(this, CurrencyListActivity.class);
             //intent.putExtra
             startActivity(intent);
+            overridePendingTransition(R.anim.right_corner_in, R.anim.right_corner_out);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -214,31 +178,24 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         //when we leave field without calculation we restore previous
         if (!hasFocus) {
             if (v == etPrice) {
-                //setEtValue((EditText) v, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getTickSize()));
                 position.setOpenPrice(getEtValue((EditText) v));
             }
             if (v == etSlOffset) {
-                //setEtValue((EditText) v, (double) position.getSlOffset(), 0);
                 position.setSlOffset(getEtValue((EditText) v).intValue());
             }
             if (v == etSl) {
-                //setEtValue((EditText) v, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
                 position.setSl(getEtValue((EditText) v));
             }
             if (v == etPercentRisk) {
-                //setEtValue((EditText) v, position.getAccount().getMaxRisk(), 3);
                 position.getAccount().setMaxRisk(getEtValue((EditText) v));
             }
             if (v == etSize) {
-                //setEtValue((EditText) v, position.getSize(), -(int) Math.log10(position.getInstrument().getMinPos()));
                 position.setSize(getEtValue((EditText) v));
             }
             if (v == etAmountRisk) {
-                //setEtValue((EditText) v, position.calcMoneyAtRisk(), -(int) Math.log10(position.getAccount().getMinUnit()));
                 position.setAmountRisk(getEtValue((EditText) v));
             }
             if (v == etBalance) {
-                //setEtValue((EditText) v, position.getAccount().getBalance(), -(int) Math.log10(position.getAccount().getMinUnit()));
                 position.getAccount().setBalance(getEtValue((EditText) v));
             }
         }
@@ -309,8 +266,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
 
     }
 
-    //you can invoke it after sure that edittext is focused
-    public void changeEt(View v) {
+    //you can invoke it if you sure that edittext is focused
+    public void changeEt(View v,double speeder) {
         EditText currentEt = (EditText) getCurrentFocus();
         double prevValue = getEtValue(currentEt);
         double change = 0;
@@ -323,36 +280,24 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         if (currentEt == etAmountRisk || currentEt == etBalance)
             change = position.getAccount().getMinUnit();
 
-        if (v == ibDecrease) setEtValue(currentEt, prevValue - change, -(int) Math.log10(change));
-        if (v == ibIncrease) setEtValue(currentEt, prevValue + change, -(int) Math.log10(change));
+        if (v == ibDecrease) setEtValue(currentEt, prevValue - change*speeder, -(int) Math.log10(change));
+        if (v == ibIncrease) setEtValue(currentEt, prevValue + change*speeder, -(int) Math.log10(change));
     }
+    public void changeEt(View v) { changeEt(v,1);}
 
-//    }
-
-
-    private void animateTextView(TextView textView) {
-//        AnimateCalculatedFields animateCalculatedFieldsPrev = (AnimateCalculatedFields) textView.getTag();
-//        if (animateCalculatedFieldsPrev != null) {
-//            animateCalculatedFieldsPrev.cancel(true);
-//        }
-//
-//        AnimateCalculatedFields animateCalculatedFields = new AnimateCalculatedFields();
-//        //animateCalculatedFields.execute(textView);
-//        animateCalculatedFields.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, textView);
-//        textView.setTag(animateCalculatedFields); //this is important for first lines of this methods
-
+    private static synchronized void animateTextView(TextView textView) {
+        textView.clearAnimation();
         ObjectAnimator animator1 = ObjectAnimator.ofInt(textView, "textColor", Color.BLACK, Color.GREEN);
         ObjectAnimator animator2 = ObjectAnimator.ofInt(textView, "textColor", Color.GREEN, Color.BLACK);
         animator1.setDuration(250);
-        animator2.setDuration(750);
+        animator2.setDuration(250);
 
+        if (textView.getTag() instanceof AnimatorSet) ((AnimatorSet)textView.getTag()).cancel();
         AnimatorSet set = new AnimatorSet();
         set.playSequentially(animator1, animator2);
         set.start();
+        textView.setTag(set);
     }
-
-
-    IncrementationThread incrementationThread;
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {

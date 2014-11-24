@@ -26,6 +26,7 @@ public class CurrencyListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency_list);
+        //overridePendingTransition(R.anim.left_in,R.anim.left_out);
 
         initActivityFields();
     }
@@ -60,9 +61,16 @@ public class CurrencyListActivity extends Activity {
             case android.R.id.home:
                 // app icon in action bar clicked; goto parent activity.
                 this.finish();
+                overridePendingTransition(R.anim.right_in,R.anim.right_out);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.right_in,R.anim.right_out);
     }
 }
