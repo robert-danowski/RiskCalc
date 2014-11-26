@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,8 +22,10 @@ public class CurrencyListActivity extends Activity {
 
     TextView tvCurrencyRate;
     EditText etCurrencyRate;
+    ListView lvCurrenciesList;
 
-    List<Position> positionsList;
+    List<Position> positionsList=new ArrayList<Position>();
+    ListAdapter listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,7 @@ public class CurrencyListActivity extends Activity {
         //overridePendingTransition(R.anim.left_in,R.anim.left_out);
 
         initActivityFields();
+        initListOfPositions();
     }
 
     private void initActivityFields() {
@@ -43,6 +49,16 @@ public class CurrencyListActivity extends Activity {
         etMinPos.setText("0.01");
         tvCurrencyRate.setText("USDPLN rate:");
         etCurrencyRate.setText("3.3947");
+    }
+
+    private void initListOfPositions() {
+        Account account = new Account();
+        Instrument instrument = new Instrument();
+        positionsList.add(new Position(account,instrument, 1.2486, 1.2466, 0.01));
+        positionsList.add(new Position(account,new Instrument("USD","RUB",0.00001,0.1,0.01), 47.25617, 44.00000, 0.01));
+        lvCurrenciesList = (ListView) findViewById(R.id.listView);
+        listAdapter = new ListAdapter(this, R.id.listView, positionsList);
+        lvCurrenciesList.setAdapter(listAdapter);
     }
 
     @Override

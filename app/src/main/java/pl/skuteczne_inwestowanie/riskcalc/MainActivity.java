@@ -19,8 +19,11 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
 
 
 public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener, AdapterView.OnItemSelectedListener, OnTouchListener {
@@ -41,15 +44,28 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
     private ImageButton ibDownload;
 
     IncrementationThread incrementationThread;
+    QuotationDownloader qd = new QuotationDownloader();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        position = new Position();
+        position = new Position(); //position gets default settings
+        try {
+            //but if I don't touch any exceptions I read position from file
+            position = (Position) InternalStorage.readObject(this,Const.FILE_DEFAULT_POS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        initActivityFields();
+        try {
+            initActivityFields();
+        } catch (NoFoundCurrencyException e) {
+            e.printStackTrace();
+        }
         initSpinner();
     }
 
@@ -65,7 +81,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         sCurrency.setOnItemSelectedListener(this);
     }
 
-    private void initActivityFields() {
+    private void initActivityFields() throws NoFoundCurrencyException {
         findViews();
         initListeners();
         initValues();
@@ -123,7 +139,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         return Double.parseDouble(et.getText().toString());
     }
 
-    private void initValues() {
+    private void initValues() throws NoFoundCurrencyException {
         setEtValue(etPrice, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getTickSize()));
         setEtValue(etSl, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
         calcEtSlOffset();
@@ -137,7 +153,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         setEtValue(etSlOffset, (double) position.getSlOffset(), 0);
     }
 
-    public void calcEtSize() {
+    public void calcEtSize() throws NoFoundCurrencyException {
         setEtValue(etSize, position.calcSize(), -(int) Math.log10(position.getInstrument().getMinPos()));
     }
 
@@ -146,11 +162,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         setEtValue(etSl, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
     }
 
-    public void calcEtAmountRisk() {
+    public void calcEtAmountRisk() throws NoFoundCurrencyException {
         setEtValue(etAmountRisk, position.calcMoneyAtRisk(), -(int) Math.log10(position.getAccount().getMinUnit()));
     }
 
-    public void calcEtPercentRisk() {
+    public void calcEtPercentRisk() throws NoFoundCurrencyException {
         setEtValue(etPercentRisk, position.calcPercentRisk(), 3);
     }
 
@@ -167,7 +183,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
             Intent intent = new Intent(this, CurrencyListActivity.class);
             //intent.putExtra
             startActivity(intent);
-            overridePendingTransition(R.anim.right_corner_in, R.anim.right_corner_out);
+            overridePendingTransition(R.anim.left_in, R.anim.left_out);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -203,54 +219,58 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
 
     @Override
     public void onClick(View v) {
-        if (v == bCalculate) {
-            if (etPrice.isFocused()) {
-                //user probably changed open price, so we take it
-                position.setOpenPrice(getEtValue(etPrice));
-                calcEtSlOffset();
-                calcEtSize();
-                calcEtAmountRisk();
+        try {
+            if (v == bCalculate) {
+                if (etPrice.isFocused()) {
+                    //user probably changed open price, so we take it
+                    position.setOpenPrice(getEtValue(etPrice));
+                    calcEtSlOffset();
+                    calcEtSize();
+                    calcEtAmountRisk();
+                }
+                if (etSlOffset.isFocused()) {
+                    position.setSlOffset(getEtValue(etSlOffset).intValue());
+                    calcEtSl();
+                    calcEtSize();
+                    calcEtAmountRisk();
+                }
+                if (etSl.isFocused()) {
+                    position.setSl(getEtValue(etSl));
+                    calcEtSlOffset();
+                    calcEtSize();
+                    calcEtAmountRisk();
+                }
+                if (etPercentRisk.isFocused()) {
+                    position.getAccount().setMaxRisk(getEtValue(etPercentRisk));
+                    calcEtSize();
+                    calcEtAmountRisk();
+                }
+                if (etSize.isFocused()) {
+                    position.setSize(getEtValue(etSize));
+                    calcEtPercentRisk();
+                    calcEtAmountRisk();
+                }
+                if (etAmountRisk.isFocused()) {
+                    position.setAmountRisk(getEtValue(etAmountRisk));
+                    calcEtSize();
+                    calcEtPercentRisk();
+
+                }
+                if (etBalance.isFocused()) {
+                    position.getAccount().setBalance(getEtValue(etBalance));
+                    calcEtSize();
+                    calcEtAmountRisk();
+                }
             }
-            if (etSlOffset.isFocused()) {
-                position.setSlOffset(getEtValue(etSlOffset).intValue());
-                calcEtSl();
-                calcEtSize();
-                calcEtAmountRisk();
-            }
-            if (etSl.isFocused()) {
-                position.setSl(getEtValue(etSl));
-                calcEtSlOffset();
-                calcEtSize();
-                calcEtAmountRisk();
-            }
-            if (etPercentRisk.isFocused()) {
-                position.getAccount().setMaxRisk(getEtValue(etPercentRisk));
-                calcEtSize();
-                calcEtAmountRisk();
-            }
-            if (etSize.isFocused()) {
-                position.setSize(getEtValue(etSize));
-                calcEtPercentRisk();
-                calcEtAmountRisk();
-            }
-            if (etAmountRisk.isFocused()) {
-                position.setAmountRisk(getEtValue(etAmountRisk));
-                calcEtSize();
-                calcEtPercentRisk();
+            if ((v == ibDecrease || v == ibIncrease) && getCurrentFocus() instanceof EditText)
+                changeEt(v);
+            if (v == ibDownload) {
+                qd.updateET(this, etPrice, position.getInstrument());
 
             }
-            if (etBalance.isFocused()) {
-                position.getAccount().setBalance(getEtValue(etBalance));
-                calcEtSize();
-                calcEtAmountRisk();
-            }
-        }
-        if ((v == ibDecrease || v == ibIncrease) && getCurrentFocus() instanceof EditText)
-            changeEt(v);
-        if (v == ibDownload) {
-            QuotationDownloader qd = new QuotationDownloader();
-            qd.updateET(this, etPrice, position.getInstrument());
 
+        } catch (NoFoundCurrencyException exc) {
+            //we try do sth with this exception
         }
     }
 
@@ -267,7 +287,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
     }
 
     //you can invoke it if you sure that edittext is focused
-    public void changeEt(View v,double speeder) {
+    public void changeEt(View v, double speeder) {
         EditText currentEt = (EditText) getCurrentFocus();
         double prevValue = getEtValue(currentEt);
         double change = 0;
@@ -280,10 +300,15 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         if (currentEt == etAmountRisk || currentEt == etBalance)
             change = position.getAccount().getMinUnit();
 
-        if (v == ibDecrease) setEtValue(currentEt, prevValue - change*speeder, -(int) Math.log10(change));
-        if (v == ibIncrease) setEtValue(currentEt, prevValue + change*speeder, -(int) Math.log10(change));
+        if (v == ibDecrease)
+            setEtValue(currentEt, prevValue - change * speeder, -(int) Math.log10(change));
+        if (v == ibIncrease)
+            setEtValue(currentEt, prevValue + change * speeder, -(int) Math.log10(change));
     }
-    public void changeEt(View v) { changeEt(v,1);}
+
+    public void changeEt(View v) {
+        changeEt(v, 1);
+    }
 
     private static synchronized void animateTextView(TextView textView) {
         textView.clearAnimation();
@@ -292,7 +317,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         animator1.setDuration(250);
         animator2.setDuration(250);
 
-        if (textView.getTag() instanceof AnimatorSet) ((AnimatorSet)textView.getTag()).cancel();
+        if (textView.getTag() instanceof AnimatorSet) ((AnimatorSet) textView.getTag()).cancel();
         AnimatorSet set = new AnimatorSet();
         set.playSequentially(animator1, animator2);
         set.start();
@@ -322,6 +347,30 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         return false;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            InternalStorage.writeObject(this, Const.FILE_QUOTATIONS, qd);
+            InternalStorage.writeObject(this, Const.FILE_DEFAULT_POS, position);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void onResume() {
+        super.onResume();
+        QuotationDownloader tempQuotationDownloader;
+
+        try {
+            tempQuotationDownloader = (QuotationDownloader) InternalStorage.readObject(this, Const.FILE_QUOTATIONS);
+            if (tempQuotationDownloader != null) qd = tempQuotationDownloader;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 

@@ -1,32 +1,32 @@
 package pl.skuteczne_inwestowanie.riskcalc;
 
+import java.io.Serializable;
+
+import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
+
 /**
  * Created by teodor on 2014-11-10.
  * link between market and our account, we can choose moment and size of our position
  * we take care of proper number of decimal places in this class not in activity
  */
-public class Position {
+public class Position implements Serializable {
     private Account account;
     private Instrument instrument;
     private double openPrice; //open price
     private double sl; //stop loss
     private double size; //size in lots
 
-    public Position(Account acc,Instrument ins,double oP, double stopLoss,double sizePos) {
+    public Position(Account acc, Instrument ins, double oP, double stopLoss, double sizePos) {
         instrument = ins;
         account = acc;
 
         openPrice = oP;
         sl = stopLoss;
-        size=sizePos;
+        size = sizePos;
     }
-    public Position() {
-        instrument = new Instrument();
-        account = new Account();
 
-        openPrice = 1.2486;
-        sl = openPrice - 20 * instrument.getTickSize();
-        size = instrument.getMinPos();
+    public Position() {
+        this(new Account(), new Instrument(), 1.2486, 1.2466, 0.01);
     }
 
     public Instrument getInstrument() {
@@ -78,23 +78,23 @@ public class Position {
         return sl;
     }
 
-     public double calcOneLotRisk() {
+    public double calcOneLotRisk() throws NoFoundCurrencyException {
         return Math.abs(getSlOffset()) * ConvertCurrency.calc(
                 instrument.getTickValue(), instrument.getQuotedCurrency(), account.getCurrency()
         );
     }
 
-    public double calcSize() {
+    public double calcSize() throws NoFoundCurrencyException {
         double MaxCapitalAtRisk = account.getMaxRisk() * account.getBalance();
         size = Math.floor(MaxCapitalAtRisk / calcOneLotRisk() / instrument.getMinPos()) * instrument.getMinPos();
         return size;
     }
 
-    public double calcMoneyAtRisk() {
+    public double calcMoneyAtRisk() throws NoFoundCurrencyException {
         return size * calcOneLotRisk();
     }
 
-    public double calcPercentRisk() {
+    public double calcPercentRisk() throws NoFoundCurrencyException {
         return calcMoneyAtRisk() / account.getBalance();
     }
 

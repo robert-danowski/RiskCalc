@@ -1,9 +1,11 @@
 package pl.skuteczne_inwestowanie.riskcalc;
 
+import java.io.Serializable;
+
 /**
  * Created by trevny on 2014-11-10.
  */
-public class Account {
+public class Account implements Serializable{
     private String currency;
     private double balance;
     private double maxRisk; //in percents

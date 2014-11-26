@@ -1,9 +1,11 @@
 package pl.skuteczne_inwestowanie.riskcalc;
 
+import java.io.Serializable;
+
 /**
  * Created by trevny on 2014-11-10.
  */
-public class Instrument {
+public class Instrument implements Serializable {
     private String baseCurrency; //for stocks name of stock
     private String quotedCurrency;
     private double tickSize; //0.0001 for EURUSD
