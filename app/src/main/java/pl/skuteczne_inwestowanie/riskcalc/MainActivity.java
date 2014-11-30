@@ -44,7 +44,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
     private ImageButton ibDownload;
 
     IncrementationThread incrementationThread;
-    QuotationDownloader qd = new QuotationDownloader();
+    QuotationDownloader quotationDownloader = new QuotationDownloader();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +52,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         setContentView(R.layout.activity_main);
 
         position = new Position(); //position gets default settings
-        try {
-            //but if I don't touch any exceptions I read position from file
-            position = (Position) InternalStorage.readObject(this,Const.FILE_DEFAULT_POS);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
 
-        try {
-            initActivityFields();
-        } catch (NoFoundCurrencyException e) {
-            e.printStackTrace();
-        }
+
+        initActivityFields();
         initSpinner();
     }
 
@@ -80,11 +69,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         sCurrency.setAdapter(adapter);
         sCurrency.setOnItemSelectedListener(this);
     }
+    
+    
 
-    private void initActivityFields() throws NoFoundCurrencyException {
+    private void initActivityFields() {
         findViews();
         initListeners();
-        initValues();
     }
 
     private void findViews() {
@@ -139,7 +129,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
         return Double.parseDouble(et.getText().toString());
     }
 
-    private void initValues() throws NoFoundCurrencyException {
+    private void updateValues() throws NoFoundCurrencyException {
         setEtValue(etPrice, position.getOpenPrice(), -(int) Math.log10(position.getInstrument().getTickSize()));
         setEtValue(etSl, position.getSl(), -(int) Math.log10(position.getInstrument().getTickSize()));
         calcEtSlOffset();
@@ -265,7 +255,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
             if ((v == ibDecrease || v == ibIncrease) && getCurrentFocus() instanceof EditText)
                 changeEt(v);
             if (v == ibDownload) {
-                qd.updateET(this, etPrice, position.getInstrument());
+                quotationDownloader.updateET(this, etPrice, position.getInstrument());
 
             }
 
@@ -351,7 +341,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
     protected void onPause() {
         super.onPause();
         try {
-            InternalStorage.writeObject(this, Const.FILE_QUOTATIONS, qd);
+            InternalStorage.writeObject(this, Const.FILE_QUOTATIONS, quotationDownloader);
             InternalStorage.writeObject(this, Const.FILE_DEFAULT_POS, position);
         } catch (IOException e) {
             e.printStackTrace();
@@ -360,11 +350,28 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
 
     protected void onResume() {
         super.onResume();
+
+        try {
+            //but if I don't touch any exceptions I read position from file
+            position = (Position) InternalStorage.readObject(this,Const.FILE_DEFAULT_POS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        setTitle(position.getInstrument().getBaseCurrency() + position.getInstrument().getQuotedCurrency());
+
+        try {
+            updateValues();
+        } catch (NoFoundCurrencyException e) {
+            e.printStackTrace();
+        }
+
         QuotationDownloader tempQuotationDownloader;
 
         try {
             tempQuotationDownloader = (QuotationDownloader) InternalStorage.readObject(this, Const.FILE_QUOTATIONS);
-            if (tempQuotationDownloader != null) qd = tempQuotationDownloader;
+            if (tempQuotationDownloader != null) quotationDownloader = tempQuotationDownloader;
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

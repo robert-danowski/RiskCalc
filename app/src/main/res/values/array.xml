@@ -11,4 +11,16 @@
         <item>USD</item>
         <item>EUR</item>
     </string-array>
+
+    <string-array name="base_currencies_list">
+        <item>EUR</item>
+        <item>USD</item>
+        <item>XAU</item>
+    </string-array>
+
+    <string-array name="quoted_currencies_list">
+        <item>USD</item>
+        <item>RUB</item>
+        <item>PLN</item>
+    </string-array>
 </resources>

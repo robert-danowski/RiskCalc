@@ -23,5 +23,7 @@
     <string name="confirm">Confirm</string>
     <string name="download_rate_content_description">download rate</string>
     <string name="slash">/</string>
+    <string name="quoted_currency">quoted currency</string>
+    <string name="base_currency">base currency</string>
 
 </resources>

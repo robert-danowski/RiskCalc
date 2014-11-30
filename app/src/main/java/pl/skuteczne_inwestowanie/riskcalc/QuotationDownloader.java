@@ -91,7 +91,11 @@ public class QuotationDownloader implements Serializable {
                 result = listOfCurrencies.get(i).getQuotation();
             }
         }
-        if (!thereIs) throw new NoFoundCurrencyException();
+        //if (!thereIs) throw new NoFoundCurrencyException();
+        if (!thereIs) {
+            new UpdateTask().execute(what);
+            return 1.0;
+        }
 
         return result;
     }
@@ -126,13 +130,14 @@ public class QuotationDownloader implements Serializable {
 
     public void updateET(MainActivity ma, EditText et, Instrument ins) throws NoFoundCurrencyException {
         UpdateTask updateTask = new UpdateTask();
-        updateTask.execute("EURUSD");
-        ma.setEtValue(et, getQuotation("EURUSD"), -(int) Math.log10(ins.getTickSize()));
+        updateTask.execute(ins.getBaseCurrency()+ins.getQuotedCurrency());
+        ma.setEtValue(et, getQuotation(ins.getBaseCurrency()+ins.getQuotedCurrency()), -(int) Math.log10(ins.getTickSize()));
     }
 
     QuotationDownloader() {
         listOfCurrencies = new ArrayList<DownloadedCurrency>();
-        listOfCurrencies.add(new DownloadedCurrency("USDPLN", 3.34050));
-        listOfCurrencies.add(new DownloadedCurrency("RUBPLN", 0.07059));
+
+        setQuotation("USDPLN", 3.34050);
+        setQuotation("RUBPLN", 0.07059);
     }
 }
