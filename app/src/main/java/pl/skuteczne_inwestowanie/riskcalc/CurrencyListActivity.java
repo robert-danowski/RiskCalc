@@ -20,32 +20,31 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
 
 
 public class CurrencyListActivity extends Activity implements
         AdapterView.OnItemSelectedListener, View.OnClickListener {
 
-    private EditText etTickSize;
-    private EditText etTickValue;
-    private EditText etMinPos;
+    @InjectView(R.id.etTickSize) EditText etTickSize;
+    @InjectView(R.id.etTickValue) EditText etTickValue;
+    @InjectView(R.id.etMinPos) EditText etMinPos;
 
-    private TextView tvCurrencyRate;
-    private EditText etCurrencyRate;
-    private ListView lvCurrenciesList;
+    @InjectView(R.id.tvCurrencyRate) TextView tvCurrencyRate;
+    @InjectView(R.id.etCurrencyRate) EditText etCurrencyRate;
+    @InjectView(R.id.lvCurrenciesList) ListView lvCurrenciesList;
 
-    private ImageButton ibDownloadRate;
-    private Button bConfirm;
+    @InjectView(R.id.ibDownloadRate) ImageButton ibDownloadRate;
+    @InjectView(R.id.bConfirm) Button bConfirm;
 
-    private List<Position> positionsList;
     private ListAdapter listAdapter;
     private Position currentPosition;
     private QuotationDownloader quotationDownloader;
     private Spinner sBaseCurrency;
     private Spinner sQuotedCurrency;
 
-    private String currentBaseCurrency;
-    private String currentQuotedCurrency;
     private String[] listBaseCurrencies;
     private String[] listQuotedCurrencies;
     private ArrayAdapter<String> aBaseCurrency;
@@ -56,35 +55,28 @@ public class CurrencyListActivity extends Activity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency_list);
+        ButterKnife.inject(this);
 
+        setListeners();
+        getCurrencyListsFromResource();
         initListOfPositions();
-        initActivityFields();
+        initSpinners();
+        updateFieldsFromCurrentPosition();
     }
 
     void setEtValue(EditText et, Double value) {
         et.setText(value.toString());
     }
+    Double getEtValue(EditText et) {
+        return Double.parseDouble(et.getText().toString());
+    }
 
-
-
-    private void initActivityFields() {
-        etTickSize = (EditText) findViewById(R.id.etTickSize);
-        etTickValue = (EditText) findViewById(R.id.etTickValue);
-        etMinPos = (EditText) findViewById(R.id.etMinPos);
-        tvCurrencyRate = (TextView) findViewById(R.id.tvCurrencyRate);
-        etCurrencyRate = (EditText) findViewById(R.id.etCurrencyRate);
-        ibDownloadRate = (ImageButton) findViewById(R.id.ibDownloadRate);
-        bConfirm = (Button) findViewById(R.id.bConfirm);
-
-        listBaseCurrencies = getResources().getStringArray(R.array.base_currencies_list);
-        listQuotedCurrencies = getResources().getStringArray(R.array.quoted_currencies_list);
-
+    private void initSpinners() {
         sBaseCurrency = (Spinner) findViewById(R.id.sBaseCurrency);
         aBaseCurrency = new ArrayAdapter<String>(this
                 , android.R.layout.simple_spinner_item
                 , new ArrayList<String>(Arrays.asList(listBaseCurrencies)));
         sBaseCurrency.setAdapter(aBaseCurrency);
-        sBaseCurrency.setSelection(aBaseCurrency.getPosition(currentPosition.getInstrument().getBaseCurrency()));
         sBaseCurrency.setOnItemSelectedListener(this);
 
         sQuotedCurrency = (Spinner) findViewById(R.id.sQuotedCurrency);
@@ -92,13 +84,31 @@ public class CurrencyListActivity extends Activity implements
                 , android.R.layout.simple_spinner_item
                 , new ArrayList<String>(Arrays.asList(listQuotedCurrencies)));
         sQuotedCurrency.setAdapter(aQuotedCurrency);
-        sQuotedCurrency.setSelection(aQuotedCurrency.getPosition(currentPosition.getInstrument().getQuotedCurrency()));
         sQuotedCurrency.setOnItemSelectedListener(this);
+    }
+
+    private void updateFieldsFromCurrentPosition() {
+
+        sBaseCurrency.setSelection(aBaseCurrency.getPosition(currentPosition.getInstrument().getBaseCurrency()));
+        sQuotedCurrency.setSelection(aQuotedCurrency.getPosition(currentPosition.getInstrument().getQuotedCurrency()));
 
         setEtValue(etTickSize, currentPosition.getInstrument().getTickSize());
         setEtValue(etTickValue, currentPosition.getInstrument().getTickValue());
         setEtValue(etMinPos, currentPosition.getInstrument().getMinPos());
+    }
 
+    void updateCurrentPositionFromFields() {
+        currentPosition.getInstrument().setTickSize(getEtValue(etTickSize));
+        currentPosition.getInstrument().setTickValue(getEtValue(etTickValue));
+        currentPosition.getInstrument().setMinPos(getEtValue(etMinPos));
+    }
+
+    private void getCurrencyListsFromResource() {
+        listBaseCurrencies = getResources().getStringArray(R.array.base_currencies_list);
+        listQuotedCurrencies = getResources().getStringArray(R.array.quoted_currencies_list);
+    }
+
+    private void setListeners() {
         ibDownloadRate.setOnClickListener(this);
         bConfirm.setOnClickListener(this);
     }
@@ -120,27 +130,42 @@ public class CurrencyListActivity extends Activity implements
         return currencyCross;
     }
 
-    private void initListOfPositions() {
-        Account account = new Account();
-        Instrument instrument = new Instrument();
-        currentPosition = new Position();
-        quotationDownloader = new QuotationDownloader();
+    private void readFieldsFromFile() {
         try {
             //but if I don't touch any exceptions I read position from file
             currentPosition = (Position) InternalStorage.readObject(this, Const.FILE_DEFAULT_POS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
             quotationDownloader = (QuotationDownloader) InternalStorage.readObject(this, Const.FILE_QUOTATIONS);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        positionsList = new ArrayList<Position>();
-        positionsList.add(currentPosition);
-//        positionsList.add(new Position(account, instrument, 1.2486, 1.2466, 0.01));
-        positionsList.add(new Position(account, new Instrument("USD", "RUB", 0.00001, 0.1, 0.01), 47.25617, 44.00000, 0.01));
-        lvCurrenciesList = (ListView) findViewById(R.id.listView);
-        listAdapter = new ListAdapter(this, R.id.listView, positionsList);
+        listAdapter.readListFromFile();
+
+    }
+
+    private void initListOfPositions() {
+        Account account = new Account();
+        Instrument instrument = new Instrument();
+        currentPosition = new Position();
+        quotationDownloader = new QuotationDownloader();
+        List<Position> positionsList = new ArrayList<Position>();
+        listAdapter = new ListAdapter(this, R.id.lvCurrenciesList, positionsList);
+        listAdapter.addOrUpdatePosition(currentPosition);
+        readFieldsFromFile();
         lvCurrenciesList.setAdapter(listAdapter);
+
+        //positionsList.add(currentPosition);
+        //lvCurrenciesList.setAdapter(listAdapter);
+//        positionsList.add(new Position(account, instrument, 1.2486, 1.2466, 0.01));
+        //positionsList.add(new Position(account, new Instrument("USD", "RUB", 0.00001, 0.1, 0.01), 47.25617, 44.00000, 0.01));
+
     }
 
     @Override
@@ -184,7 +209,6 @@ public class CurrencyListActivity extends Activity implements
     }
 
 
-
     //private void updateSecondList()
 
     //next time I write one method instead two very similar
@@ -202,7 +226,6 @@ public class CurrencyListActivity extends Activity implements
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     @Override
@@ -211,9 +234,12 @@ public class CurrencyListActivity extends Activity implements
             updateTvCurrencyRate();
         }
         if (v==bConfirm) {
+            updateCurrentPositionFromFields();
+            listAdapter.addOrUpdatePosition(currentPosition);
             try {
                 InternalStorage.writeObject(this, Const.FILE_QUOTATIONS, quotationDownloader);
                 InternalStorage.writeObject(this, Const.FILE_DEFAULT_POS, currentPosition);
+                listAdapter.saveListToFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }

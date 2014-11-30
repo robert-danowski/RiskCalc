@@ -55,6 +55,14 @@ public class QuotationDownloader implements Serializable {
         }
     }
 
+
+    QuotationDownloader() {
+        listOfCurrencies = new ArrayList<DownloadedCurrency>();
+
+        setQuotation("USDPLN", 3.34050);
+        setQuotation("RUBPLN", 0.07059);
+    }
+
     //only for async tasks
     private double downloadQuotation(String param) {
         double result = 0;
@@ -93,6 +101,7 @@ public class QuotationDownloader implements Serializable {
         }
         //if (!thereIs) throw new NoFoundCurrencyException();
         if (!thereIs) {
+            //probably not updated yet
             new UpdateTask().execute(what);
             return 1.0;
         }
@@ -115,11 +124,14 @@ public class QuotationDownloader implements Serializable {
         setQuotation(dc.getName(),dc.getQuotation());
     }
 
-    class UpdateTask extends AsyncTask<String, Void, DownloadedCurrency> {
+    private class UpdateTask extends AsyncTask<String, Void, DownloadedCurrency> {
 
         @Override
         protected DownloadedCurrency doInBackground(String... params) {
-            return new DownloadedCurrency(params[0],downloadQuotation(params[0]));
+            //if base and quoted currency are equal there are not in stooq.pl
+            if (params[0].substring(0,2)==params[0].substring(3,5))
+                return new DownloadedCurrency(params[0], 1.0);
+            else return new DownloadedCurrency(params[0],downloadQuotation(params[0]));
         }
 
         @Override
@@ -132,12 +144,5 @@ public class QuotationDownloader implements Serializable {
         UpdateTask updateTask = new UpdateTask();
         updateTask.execute(ins.getBaseCurrency()+ins.getQuotedCurrency());
         ma.setEtValue(et, getQuotation(ins.getBaseCurrency()+ins.getQuotedCurrency()), -(int) Math.log10(ins.getTickSize()));
-    }
-
-    QuotationDownloader() {
-        listOfCurrencies = new ArrayList<DownloadedCurrency>();
-
-        setQuotation("USDPLN", 3.34050);
-        setQuotation("RUBPLN", 0.07059);
     }
 }

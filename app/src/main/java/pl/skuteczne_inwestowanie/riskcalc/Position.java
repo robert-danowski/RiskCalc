@@ -25,8 +25,10 @@ public class Position implements Serializable {
         size = sizePos;
     }
 
+    public Position(Account acc, Instrument ins) {this(acc,ins,1.2486, 1.2466, 0.01);}
+
     public Position() {
-        this(new Account(), new Instrument(), 1.2486, 1.2466, 0.01);
+        this(new Account(), new Instrument());
     }
 
     public Instrument getInstrument() {

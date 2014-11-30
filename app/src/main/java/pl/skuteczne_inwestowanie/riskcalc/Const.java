@@ -6,5 +6,6 @@ package pl.skuteczne_inwestowanie.riskcalc;
 public final class Const {
     final static String FILE_QUOTATIONS="quotations.dat";
     final static String FILE_DEFAULT_POS="default_pos.dat";
+    final static String FILE_CURR_SET_LIST="currency_settings.dat";
     //final static String FILE
 }
