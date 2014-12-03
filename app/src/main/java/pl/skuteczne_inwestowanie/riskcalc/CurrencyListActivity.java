@@ -26,7 +26,7 @@ import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
 
 
 public class CurrencyListActivity extends Activity implements
-        AdapterView.OnItemSelectedListener, View.OnClickListener {
+        AdapterView.OnItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
 
     @InjectView(R.id.etTickSize) EditText etTickSize;
     @InjectView(R.id.etTickValue) EditText etTickValue;
@@ -111,6 +111,7 @@ public class CurrencyListActivity extends Activity implements
     private void setListeners() {
         ibDownloadRate.setOnClickListener(this);
         bConfirm.setOnClickListener(this);
+        lvCurrenciesList.setOnItemClickListener(this);
     }
 
     private String updateTvCurrencyRate() {
@@ -147,7 +148,6 @@ public class CurrencyListActivity extends Activity implements
             e.printStackTrace();
         }
         listAdapter.readListFromFile();
-
     }
 
     private void initListOfPositions() {
@@ -157,13 +157,9 @@ public class CurrencyListActivity extends Activity implements
         quotationDownloader = new QuotationDownloader();
         List<Position> positionsList = new ArrayList<Position>();
         listAdapter = new ListAdapter(this, R.id.lvCurrenciesList, positionsList);
-        listAdapter.addOrUpdatePosition(currentPosition);
         readFieldsFromFile();
         lvCurrenciesList.setAdapter(listAdapter);
 
-        //positionsList.add(currentPosition);
-        //lvCurrenciesList.setAdapter(listAdapter);
-//        positionsList.add(new Position(account, instrument, 1.2486, 1.2466, 0.01));
         //positionsList.add(new Position(account, new Instrument("USD", "RUB", 0.00001, 0.1, 0.01), 47.25617, 44.00000, 0.01));
 
     }
@@ -224,6 +220,7 @@ public class CurrencyListActivity extends Activity implements
         updateTvCurrencyRate();
     }
 
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
     }
@@ -235,7 +232,7 @@ public class CurrencyListActivity extends Activity implements
         }
         if (v==bConfirm) {
             updateCurrentPositionFromFields();
-            listAdapter.addOrUpdatePosition(currentPosition);
+            listAdapter.add(currentPosition);
             try {
                 InternalStorage.writeObject(this, Const.FILE_QUOTATIONS, quotationDownloader);
                 InternalStorage.writeObject(this, Const.FILE_DEFAULT_POS, currentPosition);
@@ -243,8 +240,16 @@ public class CurrencyListActivity extends Activity implements
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            onBackPressed();
+//            onBackPressed();
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (parent == lvCurrenciesList) {
+            currentPosition=listAdapter.getItem(position);
+            updateFieldsFromCurrentPosition();
+            listAdapter.add(currentPosition); //the simplest way to sort our list
+        }
+    }
 }

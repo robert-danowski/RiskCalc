@@ -31,6 +31,12 @@ public class Position implements Serializable {
         this(new Account(), new Instrument());
     }
 
+    public Position(Position position) {
+        this(new Account(position.getAccount()),
+                new Instrument(position.getInstrument()),
+                position.getOpenPrice(), position.getSl(), position.getSize());
+    }
+
     public Instrument getInstrument() {
         return instrument;
     }

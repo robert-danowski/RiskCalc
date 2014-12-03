@@ -190,7 +190,6 @@
             android:layout_weight="60"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
-
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="bold" />
 

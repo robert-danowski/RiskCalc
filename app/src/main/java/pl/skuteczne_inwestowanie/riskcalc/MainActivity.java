@@ -26,7 +26,8 @@ import java.util.Locale;
 import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
 
 
-public class MainActivity extends Activity implements OnFocusChangeListener, OnClickListener, AdapterView.OnItemSelectedListener, OnTouchListener {
+public class MainActivity extends Activity implements OnFocusChangeListener,
+        OnClickListener, AdapterView.OnItemSelectedListener, OnTouchListener {
 
     private Position position;
 
@@ -127,6 +128,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener, OnC
 
     Double getEtValue(EditText et) {
         return Double.parseDouble(et.getText().toString());
+    }
+
+    //method only for QuotationDownloader which wants update EditText and position value
+    void rememberOpenPrice() {
+       position.setOpenPrice(getEtValue(etPrice));
     }
 
     private void updateValues() throws NoFoundCurrencyException {

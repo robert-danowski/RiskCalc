@@ -20,35 +20,52 @@ import java.util.List;
 public class ListAdapter extends ArrayAdapter<Position> implements Serializable {
     private Activity context;
     private List<Position> list;
-    private int maxSizeOfList=3; //someday it could be editable from application
+    private int maxSizeOfList = 5; //someday it could be editable from application
 
 
     //I know linked list would be better for this but I have small amount of data
     private void addAsFirstPosition(Position position) {
-        List<Position> tempList = new ArrayList <Position>();
+        List<Position> tempList = new ArrayList<Position>();
         tempList.add(position);
         tempList.addAll(list);
-        list=tempList;
+        list = tempList;
     }
 
-    public void addOrUpdatePosition(Position position) {
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
+    public Position getItem(int position) {
+        return list.get(position);
+    }
+
+    @Override
+    public void add(Position pos) {
+        Position position = new Position(pos); //better idea is create copy of object (not only reference)
         boolean thereIs = false;
-        for (int i = 0; i < list.size() - 1; i++) {
-            String baseCurrency=list.get(i).getInstrument().getBaseCurrency();
-            String quotedCurrency=list.get(i).getInstrument().getQuotedCurrency();
-            String curBasCurr=position.getInstrument().getBaseCurrency();
-            String curQuoCurr = position.getInstrument().getQuotedCurrency();
+        String curBasCurr = position.getInstrument().getBaseCurrency();
+        String curQuoCurr = position.getInstrument().getQuotedCurrency();
+
+        for (int i = 0; i < list.size(); i++) {
+            String baseCurrency = list.get(i).getInstrument().getBaseCurrency();
+            String quotedCurrency = list.get(i).getInstrument().getQuotedCurrency();
+
             if (baseCurrency.equalsIgnoreCase(curBasCurr)
                     && quotedCurrency.equalsIgnoreCase(curQuoCurr)) {
                 thereIs = true;
-                list.set(i,position); //the older approach
-//                list.remove(i); //remove old version
-//                addAsFirstPosition(position); //new version on the beginning
+//                list.set(i,position); //the older approach
+                list.remove(i); //remove old version
+                addAsFirstPosition(position); //new version on the beginning
+                //delete last element if list is too long
+                if (list.size()==maxSizeOfList) list.remove(maxSizeOfList - 1);
             }
         }
         if (!thereIs)
-            list.add(position); //the older approach
-//            addAsFirstPosition(position);
+//            list.add(position); //the older approach
+            addAsFirstPosition(position);
+        notifyDataSetChanged();
     }
 
     public ListAdapter(Context context, int resource, List<Position> objects) {
@@ -64,21 +81,24 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
             e.printStackTrace();
         }
     }
+
     public void readListFromFile() {
         try {
             list = (ArrayList<Position>) InternalStorage.readObject(context, Const.FILE_CURR_SET_LIST);
+            notifyDataSetChanged();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
 
-        if (rowView==null) {
+        if (rowView == null) {
             LayoutInflater layoutInflater = context.getLayoutInflater();
             rowView = layoutInflater.inflate(R.layout.item_row, null);
         }

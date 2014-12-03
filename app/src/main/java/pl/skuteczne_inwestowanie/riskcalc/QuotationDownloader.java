@@ -102,7 +102,7 @@ public class QuotationDownloader implements Serializable {
         //if (!thereIs) throw new NoFoundCurrencyException();
         if (!thereIs) {
             //probably not updated yet
-            new UpdateTask().execute(what);
+            if (!(what.substring(0,2).equalsIgnoreCase(what.substring(3,5)))) new UpdateTask().execute(what);
             return 1.0;
         }
 
@@ -144,5 +144,6 @@ public class QuotationDownloader implements Serializable {
         UpdateTask updateTask = new UpdateTask();
         updateTask.execute(ins.getBaseCurrency()+ins.getQuotedCurrency());
         ma.setEtValue(et, getQuotation(ins.getBaseCurrency()+ins.getQuotedCurrency()), -(int) Math.log10(ins.getTickSize()));
+        ma.rememberOpenPrice();
     }
 }

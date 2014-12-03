@@ -20,12 +20,16 @@ public class Instrument implements Serializable {
         minPos = mP;
     }
 
-    public Instrument()    {
-        baseCurrency = "EUR";
-        quotedCurrency = "USD";
-        tickSize = 0.0001;
-        tickValue = 10;
-        minPos=0.01;
+    public Instrument() {
+        this("EUR", "USD", 0.0001, 10, 0.01);
+    }
+
+    public Instrument(Instrument instrument) {
+        baseCurrency = instrument.getBaseCurrency();
+        quotedCurrency =  instrument.getQuotedCurrency();
+        tickSize =  instrument.getTickSize();
+        tickValue =  instrument.getTickValue();
+        minPos =  instrument.getMinPos();
     }
 
     public String getBaseCurrency() {
