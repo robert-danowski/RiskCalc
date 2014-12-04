@@ -93,7 +93,7 @@ public class QuotationDownloader implements Serializable {
     public double getQuotation(String what) throws NoFoundCurrencyException {
         boolean thereIs = false;
         double result = 0;
-        for (int i = 0; i < listOfCurrencies.size() - 1; i++) {
+        for (int i = 0; i < listOfCurrencies.size(); i++) {
             if (listOfCurrencies.get(i).getName().equalsIgnoreCase(what)) {
                 thereIs = true;
                 result = listOfCurrencies.get(i).getQuotation();
@@ -111,7 +111,7 @@ public class QuotationDownloader implements Serializable {
 
     public void setQuotation(String what,double howMuch) {
         boolean thereIs = false;
-        for (int i = 0; i < listOfCurrencies.size() - 1; i++) {
+        for (int i = 0; i < listOfCurrencies.size(); i++) {
             if (listOfCurrencies.get(i).getName().equalsIgnoreCase(what)) {
                 thereIs = true;
                 listOfCurrencies.get(i).setQuotation(howMuch);

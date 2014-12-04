@@ -225,6 +225,16 @@ public class CurrencyListActivity extends Activity implements
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
+    private void saveFiles() {
+        try {
+            InternalStorage.writeObject(this, Const.FILE_QUOTATIONS, quotationDownloader);
+            InternalStorage.writeObject(this, Const.FILE_DEFAULT_POS, currentPosition);
+            listAdapter.saveListToFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if (v==ibDownloadRate) {
@@ -233,13 +243,7 @@ public class CurrencyListActivity extends Activity implements
         if (v==bConfirm) {
             updateCurrentPositionFromFields();
             listAdapter.add(currentPosition);
-            try {
-                InternalStorage.writeObject(this, Const.FILE_QUOTATIONS, quotationDownloader);
-                InternalStorage.writeObject(this, Const.FILE_DEFAULT_POS, currentPosition);
-                listAdapter.saveListToFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            saveFiles();
 //            onBackPressed();
         }
     }
@@ -250,6 +254,7 @@ public class CurrencyListActivity extends Activity implements
             currentPosition=listAdapter.getItem(position);
             updateFieldsFromCurrentPosition();
             listAdapter.add(currentPosition); //the simplest way to sort our list
+            saveFiles();
         }
     }
 }
