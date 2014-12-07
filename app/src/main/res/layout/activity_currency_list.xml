@@ -162,19 +162,19 @@
         android:weightSum="100">
 
         <ImageButton
+            android:id="@+id/ibDownloadRate"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="35"
             android:contentDescription="@string/download_rate_content_description"
-            android:src="@android:drawable/stat_sys_download"
-            android:id="@+id/ibDownloadRate"/>
+            android:src="@android:drawable/stat_sys_download" />
 
         <EditText
             android:id="@+id/etCurrencyRate"
-            android:enabled="false"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="30"
+            android:enabled="false"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
             android:text=""
@@ -189,9 +189,15 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lvCurrenciesList"
+    <view
+        android:id="@+id/listViewBackground"
+        class="pl.skuteczne_inwestowanie.riskcalc.BackgroundContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/lvCurrenciesList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </view>
 </LinearLayout>

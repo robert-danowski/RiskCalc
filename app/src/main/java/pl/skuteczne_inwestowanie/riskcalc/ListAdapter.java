@@ -11,8 +11,10 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+
+import static pl.skuteczne_inwestowanie.riskcalc.InternalStorage.readObject;
 
 /**
  * Created by teodor on 2014-11-19.
@@ -20,13 +22,46 @@ import java.util.List;
 public class ListAdapter extends ArrayAdapter<Position> implements Serializable {
     private Activity context;
     private List<Position> list;
+    private List<Integer> idForItems;
     private int maxSizeOfList = 5; //someday it could be editable from application
+    static int currentId = 1;
 
+    HashMap<Position, Integer> mIdMap = new HashMap<Position, Integer>();
+    View.OnTouchListener mTouchListener;
+
+//    public ListAdapter(Context context, int resource, List<Position> objects) {
+//        super(context, resource, objects);
+//        this.context = (Activity) context;
+//        list = objects;
+//    }
+
+    public ListAdapter(Context context, int textViewResourceId,
+                       List<Position> objects, View.OnTouchListener listener) {
+        super(context, textViewResourceId, objects);
+        this.context = (Activity) context;
+        list=objects;
+        mTouchListener = listener;
+        for (Position object : objects) {
+            mIdMap.put(object, currentId++);
+        }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        Position item = getItem(position);
+        return mIdMap.get(item);
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return true;
+    }
 
     //I know linked list would be better for this but I have small amount of data
     private void addAsFirstPosition(Position position) {
         List<Position> tempList = new ArrayList<Position>();
         tempList.add(position);
+        mIdMap.put(position, currentId++);
         tempList.addAll(list);
         list = tempList;
     }
@@ -59,7 +94,7 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
                 list.remove(i); //remove old version
                 addAsFirstPosition(position); //new version on the beginning
                 //delete last element if list is too long
-                if (list.size()==maxSizeOfList) list.remove(maxSizeOfList - 1);
+                if (list.size() == maxSizeOfList) list.remove(maxSizeOfList - 1);
             }
         }
         if (!thereIs)
@@ -68,23 +103,33 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
         notifyDataSetChanged();
     }
 
-    public ListAdapter(Context context, int resource, List<Position> objects) {
-        super(context, resource, objects);
-        this.context = (Activity) context;
-        list = objects;
+    @Override
+    public void remove(Position position) {
+        super.remove(position);
+        list.remove(position);
     }
 
     public void saveListToFile() {
         try {
             InternalStorage.writeObject(context, Const.FILE_CURR_SET_LIST, list);
+            InternalStorage.writeObject(context, Const.FILE_CURR_SET_MAP, mIdMap);
+            InternalStorage.writeObject(context, Const.FILE_CURR_ID, currentId);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void readListFromFile() {
+        ArrayList<Position> tempList = null;
+        HashMap<Position, Integer> tempMap = null;
+
         try {
-            list = (ArrayList<Position>) InternalStorage.readObject(context, Const.FILE_CURR_SET_LIST);
+            tempList = (ArrayList<Position>) readObject(context, Const.FILE_CURR_SET_LIST);
+            tempMap = (HashMap<Position, Integer>) readObject(context, Const.FILE_CURR_SET_MAP);
+            currentId = (Integer) readObject(context, Const.FILE_CURR_ID);
+            if (tempList != null) list = tempList;
+            if (tempMap != null) mIdMap = tempMap;
+
             notifyDataSetChanged();
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,12 +140,18 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+//        View view = super.getView(position, convertView, parent);
+//        if (view != convertView) {
+//            // Add touch listener to every new view to track swipe motion
+////            view.setOnTouchListener(mTouchListener);
+//        }
+//        View rowView=view;
+
         View rowView = convertView;
-
-
         if (rowView == null) {
             LayoutInflater layoutInflater = context.getLayoutInflater();
             rowView = layoutInflater.inflate(R.layout.item_row, null);
+            rowView.setOnTouchListener(mTouchListener);
         }
 
         final Position cursorPosition = list.get(position);
