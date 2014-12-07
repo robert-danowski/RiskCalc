@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 
 import static pl.skuteczne_inwestowanie.riskcalc.InternalStorage.readObject;
@@ -21,35 +21,34 @@ import static pl.skuteczne_inwestowanie.riskcalc.InternalStorage.readObject;
  */
 public class ListAdapter extends ArrayAdapter<Position> implements Serializable {
     private Activity context;
-    private List<Position> list;
-    private List<Integer> idForItems;
+    private List<Position> listOfPositions;
+    private List<Integer> listOfIds;
     private int maxSizeOfList = 5; //someday it could be editable from application
     static int currentId = 1;
 
-    HashMap<Position, Integer> mIdMap = new HashMap<Position, Integer>();
     View.OnTouchListener mTouchListener;
 
 //    public ListAdapter(Context context, int resource, List<Position> objects) {
 //        super(context, resource, objects);
 //        this.context = (Activity) context;
-//        list = objects;
+//        listOfPositions = objects;
 //    }
 
     public ListAdapter(Context context, int textViewResourceId,
                        List<Position> objects, View.OnTouchListener listener) {
         super(context, textViewResourceId, objects);
         this.context = (Activity) context;
-        list=objects;
+        listOfPositions =objects;
         mTouchListener = listener;
-        for (Position object : objects) {
-            mIdMap.put(object, currentId++);
+        listOfIds = new ArrayList<Integer>();
+        for (int i = 0; i < objects.size(); i++) {
+            listOfIds.add(currentId++);
         }
     }
 
     @Override
     public long getItemId(int position) {
-        Position item = getItem(position);
-        return mIdMap.get(item);
+        return listOfIds.get(position);
     }
 
     @Override
@@ -57,23 +56,26 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
         return true;
     }
 
-    //I know linked list would be better for this but I have small amount of data
+    //I know linked listOfPositions would be better for this but I have small amount of data
     private void addAsFirstPosition(Position position) {
         List<Position> tempList = new ArrayList<Position>();
+        List<Integer> tempIdList = new ArrayList<Integer>();
         tempList.add(position);
-        mIdMap.put(position, currentId++);
-        tempList.addAll(list);
-        list = tempList;
+        tempIdList.add(currentId++);
+        tempList.addAll(listOfPositions);
+        tempIdList.addAll(listOfIds);
+        listOfPositions = tempList;
+        listOfIds = tempIdList;
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return listOfPositions.size();
     }
 
     @Override
     public Position getItem(int position) {
-        return list.get(position);
+        return listOfPositions.get(position);
     }
 
     @Override
@@ -83,22 +85,22 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
         String curBasCurr = position.getInstrument().getBaseCurrency();
         String curQuoCurr = position.getInstrument().getQuotedCurrency();
 
-        for (int i = 0; i < list.size(); i++) {
-            String baseCurrency = list.get(i).getInstrument().getBaseCurrency();
-            String quotedCurrency = list.get(i).getInstrument().getQuotedCurrency();
+        for (int i = 0; i < listOfPositions.size(); i++) {
+            String baseCurrency = listOfPositions.get(i).getInstrument().getBaseCurrency();
+            String quotedCurrency = listOfPositions.get(i).getInstrument().getQuotedCurrency();
 
             if (baseCurrency.equalsIgnoreCase(curBasCurr)
                     && quotedCurrency.equalsIgnoreCase(curQuoCurr)) {
                 thereIs = true;
-//                list.set(i,position); //the older approach
-                list.remove(i); //remove old version
+//                listOfPositions.set(i,position); //the older approach
+                listOfPositions.remove(i); //remove old version
                 addAsFirstPosition(position); //new version on the beginning
-                //delete last element if list is too long
-                if (list.size() == maxSizeOfList) list.remove(maxSizeOfList - 1);
+                //delete last element if listOfPositions is too long
+                if (listOfPositions.size() == maxSizeOfList) listOfPositions.remove(maxSizeOfList - 1);
             }
         }
         if (!thereIs)
-//            list.add(position); //the older approach
+//            listOfPositions.add(position); //the older approach
             addAsFirstPosition(position);
         notifyDataSetChanged();
     }
@@ -106,14 +108,13 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
     @Override
     public void remove(Position position) {
         super.remove(position);
-        list.remove(position);
+        listOfPositions.remove(position);
     }
 
     public void saveListToFile() {
         try {
-            InternalStorage.writeObject(context, Const.FILE_CURR_SET_LIST, list);
-            InternalStorage.writeObject(context, Const.FILE_CURR_SET_MAP, mIdMap);
-            InternalStorage.writeObject(context, Const.FILE_CURR_ID, currentId);
+            InternalStorage.writeObject(context, Const.FILE_CURR_SET_LIST, listOfPositions);
+            InternalStorage.writeObject(context, Const.FILE_CURR_SET_MAP, listOfIds);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,17 +122,17 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
 
     public void readListFromFile() {
         ArrayList<Position> tempList = null;
-        HashMap<Position, Integer> tempMap = null;
+        ArrayList<Integer> tempMap = null;
 
         try {
             tempList = (ArrayList<Position>) readObject(context, Const.FILE_CURR_SET_LIST);
-            tempMap = (HashMap<Position, Integer>) readObject(context, Const.FILE_CURR_SET_MAP);
-            currentId = (Integer) readObject(context, Const.FILE_CURR_ID);
-            if (tempList != null) list = tempList;
-            if (tempMap != null) mIdMap = tempMap;
-
+            tempMap = (ArrayList<Integer>) readObject(context, Const.FILE_CURR_SET_MAP);
+            if (tempList != null) listOfPositions = tempList;
+            if (tempMap != null) listOfIds = tempMap;
+            currentId = Collections.max(listOfIds)+1;
             notifyDataSetChanged();
         } catch (IOException e) {
+
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -154,7 +155,7 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
             rowView.setOnTouchListener(mTouchListener);
         }
 
-        final Position cursorPosition = list.get(position);
+        final Position cursorPosition = listOfPositions.get(position);
 
         TextView bC = (TextView) rowView.findViewById(R.id.tvBaseCurrency);
         TextView bQ = (TextView) rowView.findViewById(R.id.tvQuotedCurrency);

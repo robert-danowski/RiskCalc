@@ -30,7 +30,7 @@ import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
 
 
 public class CurrencyListActivity extends Activity implements
-        AdapterView.OnItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
+        AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     @InjectView(R.id.etTickSize) EditText etTickSize;
     @InjectView(R.id.etTickValue) EditText etTickValue;
@@ -129,7 +129,6 @@ public class CurrencyListActivity extends Activity implements
     private void setListeners() {
         ibDownloadRate.setOnClickListener(this);
         bConfirm.setOnClickListener(this);
-        lvCurrenciesList.setOnItemClickListener(this);
     }
 
     private String updateTvCurrencyRate() {
@@ -178,6 +177,14 @@ public class CurrencyListActivity extends Activity implements
 
         //positionsList.add(new Position(account, new Instrument("USD", "RUB", 0.00001, 0.1, 0.01), 47.25617, 44.00000, 0.01));
 
+    }
+
+
+    private void loadCurrencyToSettings(int position) {
+        currentPosition=listAdapter.getItem(position);
+        updateFieldsFromCurrentPosition();
+        listAdapter.add(currentPosition); //the simplest way to sort our list
+        saveFiles();
     }
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -277,6 +284,7 @@ public class CurrencyListActivity extends Activity implements
                         loadCurrencyToSettings(pos);
                     }
                 }
+                saveFiles();
                 mItemPressed = false;
                 break;
                 default:
@@ -360,6 +368,7 @@ public class CurrencyListActivity extends Activity implements
                 return true;
             }
         });
+        saveFiles(); //after delete
     }
 
 
@@ -447,17 +456,4 @@ public class CurrencyListActivity extends Activity implements
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (parent == lvCurrenciesList) {
-            loadCurrencyToSettings(position);
-        }
-    }
-
-    private void loadCurrencyToSettings(int position) {
-        currentPosition=listAdapter.getItem(position);
-        updateFieldsFromCurrentPosition();
-        listAdapter.add(currentPosition); //the simplest way to sort our list
-        saveFiles();
-    }
 }
