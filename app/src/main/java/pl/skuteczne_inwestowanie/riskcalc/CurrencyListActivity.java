@@ -73,7 +73,6 @@ public class CurrencyListActivity extends Activity implements
 
         mBackgroundContainer = (BackgroundContainer) findViewById(R.id.listViewBackground);
         android.util.Log.d("Debug", "d=" + lvCurrenciesList.getDivider());
-        final ArrayList<String> cheeseList = new ArrayList<String>();
 
         setListeners();
         getCurrencyListsFromResource();
