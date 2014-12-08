@@ -240,8 +240,8 @@ public class CurrencyListActivity extends Activity implements
                         float endX;
                         float endAlpha;
                         final boolean remove;
-                        if (deltaXAbs > v.getWidth() / 4) {
-                            // Greater than a quarter of the width - animate it out
+                        if (deltaXAbs > v.getWidth() / 3) {
+                            // Greater than a one-third of the width - animate it out
                             fractionCovered = deltaXAbs / v.getWidth();
                             endX = deltaX < 0 ? -v.getWidth() : v.getWidth();
                             endAlpha = 0;

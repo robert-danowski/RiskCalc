@@ -56,16 +56,20 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
         return true;
     }
 
+    public void updateListOfIds() {
+        listOfIds.clear();
+        for (int i = 0; i < listOfPositions.size(); i++) {
+            listOfIds.add(currentId++);
+        }
+    }
+
     //I know linked listOfPositions would be better for this but I have small amount of data
     private void addAsFirstPosition(Position position) {
         List<Position> tempList = new ArrayList<Position>();
-        List<Integer> tempIdList = new ArrayList<Integer>();
         tempList.add(position);
-        tempIdList.add(currentId++);
         tempList.addAll(listOfPositions);
-        tempIdList.addAll(listOfIds);
         listOfPositions = tempList;
-        listOfIds = tempIdList;
+        updateListOfIds();
     }
 
     @Override
@@ -93,10 +97,10 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
                     && quotedCurrency.equalsIgnoreCase(curQuoCurr)) {
                 thereIs = true;
 //                listOfPositions.set(i,position); //the older approach
-                listOfPositions.remove(i); //remove old version
+                this.remove(i); //remove old version
                 addAsFirstPosition(position); //new version on the beginning
                 //delete last element if listOfPositions is too long
-                if (listOfPositions.size() == maxSizeOfList) listOfPositions.remove(maxSizeOfList - 1);
+                if (listOfPositions.size() == maxSizeOfList) this.remove(maxSizeOfList - 1);
             }
         }
         if (!thereIs)
@@ -108,7 +112,14 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
     @Override
     public void remove(Position position) {
         super.remove(position);
+        listOfIds.remove(listOfPositions.indexOf(position));
         listOfPositions.remove(position);
+
+    }
+
+    public void remove(Integer position) {
+        listOfPositions.remove(position);
+        listOfIds.remove(position);
     }
 
     public void saveListToFile() {
@@ -122,17 +133,14 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
 
     public void readListFromFile() {
         ArrayList<Position> tempList = null;
-        ArrayList<Integer> tempMap = null;
 
         try {
             tempList = (ArrayList<Position>) readObject(context, Const.FILE_CURR_SET_LIST);
-            }
-//            tempMap = (ArrayList<Integer>) readObject(context, Const.FILE_CURR_SET_MAP);
             if (tempList != null) {
                 listOfPositions = tempList;
+                updateListOfIds();
             }
 //            if (tempMap != null) listOfIds = tempMap;
-            currentId = Collections.max(listOfIds)+1;
             notifyDataSetChanged();
         } catch (IOException e) {
 
