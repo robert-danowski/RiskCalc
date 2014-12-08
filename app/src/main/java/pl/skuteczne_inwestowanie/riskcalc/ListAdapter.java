@@ -114,7 +114,7 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
     public void saveListToFile() {
         try {
             InternalStorage.writeObject(context, Const.FILE_CURR_SET_LIST, listOfPositions);
-            InternalStorage.writeObject(context, Const.FILE_CURR_SET_MAP, listOfIds);
+//            InternalStorage.writeObject(context, Const.FILE_CURR_SET_MAP, listOfIds);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,9 +126,12 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
 
         try {
             tempList = (ArrayList<Position>) readObject(context, Const.FILE_CURR_SET_LIST);
-            tempMap = (ArrayList<Integer>) readObject(context, Const.FILE_CURR_SET_MAP);
-            if (tempList != null) listOfPositions = tempList;
-            if (tempMap != null) listOfIds = tempMap;
+            }
+//            tempMap = (ArrayList<Integer>) readObject(context, Const.FILE_CURR_SET_MAP);
+            if (tempList != null) {
+                listOfPositions = tempList;
+            }
+//            if (tempMap != null) listOfIds = tempMap;
             currentId = Collections.max(listOfIds)+1;
             notifyDataSetChanged();
         } catch (IOException e) {

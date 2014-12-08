@@ -91,14 +91,14 @@ public class CurrencyListActivity extends Activity implements
     private void initSpinners() {
         sBaseCurrency = (Spinner) findViewById(R.id.sBaseCurrency);
         aBaseCurrency = new ArrayAdapter<String>(this
-                , android.R.layout.simple_spinner_item
+                , R.layout.spinner_item
                 , new ArrayList<String>(Arrays.asList(listBaseCurrencies)));
         sBaseCurrency.setAdapter(aBaseCurrency);
         sBaseCurrency.setOnItemSelectedListener(this);
 
         sQuotedCurrency = (Spinner) findViewById(R.id.sQuotedCurrency);
         aQuotedCurrency = new ArrayAdapter<String>(this
-                , android.R.layout.simple_spinner_item
+                , R.layout.spinner_item
                 , new ArrayList<String>(Arrays.asList(listQuotedCurrencies)));
         sQuotedCurrency.setAdapter(aQuotedCurrency);
         sQuotedCurrency.setOnItemSelectedListener(this);
