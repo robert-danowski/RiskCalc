@@ -32,16 +32,24 @@ import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
 public class CurrencyListActivity extends Activity implements
         AdapterView.OnItemSelectedListener, View.OnClickListener {
 
-    @InjectView(R.id.etTickSize) EditText etTickSize;
-    @InjectView(R.id.etTickValue) EditText etTickValue;
-    @InjectView(R.id.etMinPos) EditText etMinPos;
+    @InjectView(R.id.etTickSize)
+    EditText etTickSize;
+    @InjectView(R.id.etTickValue)
+    EditText etTickValue;
+    @InjectView(R.id.etMinPos)
+    EditText etMinPos;
 
-    @InjectView(R.id.tvCurrencyRate) TextView tvCurrencyRate;
-    @InjectView(R.id.etCurrencyRate) EditText etCurrencyRate;
-    @InjectView(R.id.lvCurrenciesList) ListView lvCurrenciesList;
+    @InjectView(R.id.tvCurrencyRate)
+    TextView tvCurrencyRate;
+    @InjectView(R.id.etCurrencyRate)
+    EditText etCurrencyRate;
+    @InjectView(R.id.lvCurrenciesList)
+    ListView lvCurrenciesList;
 
-    @InjectView(R.id.ibDownloadRate) ImageButton ibDownloadRate;
-    @InjectView(R.id.bConfirm) Button bConfirm;
+    @InjectView(R.id.ibDownloadRate)
+    ImageButton ibDownloadRate;
+    @InjectView(R.id.bConfirm)
+    Button bConfirm;
 
     private ListAdapter listAdapter;
     private Position currentPosition;
@@ -84,6 +92,7 @@ public class CurrencyListActivity extends Activity implements
     void setEtValue(EditText et, Double value) {
         et.setText(value.toString());
     }
+
     Double getEtValue(EditText et) {
         return Double.parseDouble(et.getText().toString());
     }
@@ -170,17 +179,15 @@ public class CurrencyListActivity extends Activity implements
         currentPosition = new Position();
         quotationDownloader = new QuotationDownloader();
         List<Position> positionsList = new ArrayList<Position>();
-        listAdapter = new ListAdapter(this, R.id.lvCurrenciesList, positionsList,mTouchListener);
+        listAdapter = new ListAdapter(this, R.id.lvCurrenciesList, positionsList, mTouchListener);
         readFieldsFromFile();
         lvCurrenciesList.setAdapter(listAdapter);
-
         //positionsList.add(new Position(account, new Instrument("USD", "RUB", 0.00001, 0.1, 0.01), 47.25617, 44.00000, 0.01));
-
     }
 
 
     private void loadCurrencyToSettings(int position) {
-        currentPosition=listAdapter.getItem(position);
+        currentPosition = listAdapter.getItem(position);
         updateFieldsFromCurrentPosition();
         listAdapter.add(currentPosition); //the simplest way to sort our list
         saveFiles();
@@ -211,8 +218,7 @@ public class CurrencyListActivity extends Activity implements
                     v.setTranslationX(0);
                     mItemPressed = false;
                     break;
-                case MotionEvent.ACTION_MOVE:
-                {
+                case MotionEvent.ACTION_MOVE: {
                     float x = event.getX() + v.getTranslationX();
                     float deltaX = x - mDownX;
                     float deltaXAbs = Math.abs(deltaX);
@@ -229,8 +235,7 @@ public class CurrencyListActivity extends Activity implements
                     }
                 }
                 break;
-                case MotionEvent.ACTION_UP:
-                {
+                case MotionEvent.ACTION_UP: {
                     // User let go - figure out whether to animate the view out, or back into place
                     if (mSwiping) {
                         float x = event.getX() + v.getTranslationX();
@@ -277,7 +282,7 @@ public class CurrencyListActivity extends Activity implements
                                         }
                                     }
                                 });
-                    // if not swiping
+                        // if not swiping
                     } else {
                         int pos = lvCurrenciesList.getPositionForView(v);
                         loadCurrencyToSettings(pos);
@@ -401,32 +406,21 @@ public class CurrencyListActivity extends Activity implements
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent == sBaseCurrency) updateBaseCurrency(parent, position);
-        if (parent == sQuotedCurrency) updateQuotedCurrency(parent, position);
+        updateCurrency(parent,position);
     }
 
 
-    //private void updateSecondList()
-
-    //next time I write one method instead two very similar
-    private void updateBaseCurrency(AdapterView<?> parent, int pos) {
-        String newCurrentBaseCurrency = parent.getItemAtPosition(pos).toString();
-        currentPosition.getInstrument().setBaseCurrency(newCurrentBaseCurrency);
+    private void updateCurrency(AdapterView<?> parent, int pos) {
+        String newCurrentCurrency = parent.getItemAtPosition(pos).toString();
+        if (parent==sBaseCurrency) {
+            currentPosition.getInstrument().setBaseCurrency(newCurrentCurrency);
+        }
+        if (parent==sQuotedCurrency) {
+            currentPosition.getInstrument().setQuotedCurrency(newCurrentCurrency);
+        }
         updateTvCurrencyRate();
     }
-
-    private void updateQuotedCurrency(AdapterView<?> parent, int pos) {
-        String newCurrentQuotedCurrency = parent.getItemAtPosition(pos).toString();
-        currentPosition.getInstrument().setQuotedCurrency(newCurrentQuotedCurrency);
-        updateTvCurrencyRate();
-    }
-
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
@@ -444,10 +438,10 @@ public class CurrencyListActivity extends Activity implements
 
     @Override
     public void onClick(View v) {
-        if (v==ibDownloadRate) {
+        if (v == ibDownloadRate) {
             updateTvCurrencyRate();
         }
-        if (v==bConfirm) {
+        if (v == bConfirm) {
             updateCurrentPositionFromFields();
             listAdapter.add(currentPosition);
             saveFiles();

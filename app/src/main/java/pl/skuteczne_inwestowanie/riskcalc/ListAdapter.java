@@ -117,15 +117,15 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
 
     }
 
-    public void remove(Integer position) {
-        listOfPositions.remove(position);
-        listOfIds.remove(position);
+//I don't know why but when I was using Integer instead of int automatic unpacking didn't work
+    public void remove(int pos) {
+        listOfPositions.remove(pos);
+        listOfIds.remove(pos);
     }
 
     public void saveListToFile() {
         try {
             InternalStorage.writeObject(context, Const.FILE_CURR_SET_LIST, listOfPositions);
-//            InternalStorage.writeObject(context, Const.FILE_CURR_SET_MAP, listOfIds);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -139,11 +139,9 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
             if (tempList != null) {
                 listOfPositions = tempList;
                 updateListOfIds();
+                notifyDataSetChanged();
             }
-//            if (tempMap != null) listOfIds = tempMap;
-            notifyDataSetChanged();
         } catch (IOException e) {
-
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -152,12 +150,6 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-//        View view = super.getView(position, convertView, parent);
-//        if (view != convertView) {
-//            // Add touch listener to every new view to track swipe motion
-////            view.setOnTouchListener(mTouchListener);
-//        }
-//        View rowView=view;
 
         View rowView = convertView;
         if (rowView == null) {
