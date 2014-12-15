@@ -1,24 +1,19 @@
 package pl.skuteczne_inwestowanie.riskcalc;
 
+import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.widget.EditText;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 
-import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
+import pl.skuteczne_inwestowanie.riskcalc.exceptions.CurrencyNotFoundException;
 
 /**
  * Created by teodor on 2014-11-17.
@@ -59,8 +54,8 @@ public class QuotationDownloader implements Serializable {
     QuotationDownloader() {
         listOfCurrencies = new ArrayList<DownloadedCurrency>();
 
-        setQuotation("USDPLN", 3.34050);
-        setQuotation("RUBPLN", 0.07059);
+        getQuotation("USDPLN");
+        getQuotation("RUBPLN");
     }
 
     //only for async tasks
@@ -79,8 +74,11 @@ public class QuotationDownloader implements Serializable {
 //                    Symbol,Data,Czas,Otwarcie,Najwyzszy,Najnizszy,Zamkniecie
                 tokens = inputLine.split(",");
 
-
-            result = Double.parseDouble(tokens[6]);
+            try {
+                result = Double.parseDouble(tokens[6]);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
 
             in.close();
 
@@ -90,7 +88,7 @@ public class QuotationDownloader implements Serializable {
         return result;
     }
 
-    public double getQuotation(String what) throws NoFoundCurrencyException {
+    public double getQuotation(String what) {
         boolean thereIs = false;
         double result = 0;
         for (int i = 0; i < listOfCurrencies.size(); i++) {
@@ -99,7 +97,6 @@ public class QuotationDownloader implements Serializable {
                 result = listOfCurrencies.get(i).getQuotation();
             }
         }
-        //if (!thereIs) throw new NoFoundCurrencyException();
         if (!thereIs) {
             //probably not updated yet
             if (!(what.substring(0,2).equalsIgnoreCase(what.substring(3,5)))) new UpdateTask().execute(what);
@@ -140,7 +137,7 @@ public class QuotationDownloader implements Serializable {
         }
     }
 
-    public void updateET(MainActivity ma, EditText et, Instrument ins) throws NoFoundCurrencyException {
+    public void updateET(MainActivity ma, EditText et, Instrument ins) {
         UpdateTask updateTask = new UpdateTask();
         updateTask.execute(ins.getBaseCurrency()+ins.getQuotedCurrency());
         ma.setEtValue(et, getQuotation(ins.getBaseCurrency()+ins.getQuotedCurrency()), -(int) Math.log10(ins.getTickSize()));

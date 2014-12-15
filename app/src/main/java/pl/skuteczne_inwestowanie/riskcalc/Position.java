@@ -2,7 +2,7 @@ package pl.skuteczne_inwestowanie.riskcalc;
 
 import java.io.Serializable;
 
-import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
+import pl.skuteczne_inwestowanie.riskcalc.exceptions.CurrencyNotFoundException;
 
 /**
  * Created by teodor on 2014-11-10.
@@ -86,23 +86,23 @@ public class Position implements Serializable {
         return sl;
     }
 
-    public double calcOneLotRisk() throws NoFoundCurrencyException {
+    public double calcOneLotRisk() {
         return Math.abs(getSlOffset()) * ConvertCurrency.calc(
                 instrument.getTickValue(), instrument.getQuotedCurrency(), account.getCurrency()
         );
     }
 
-    public double calcSize() throws NoFoundCurrencyException {
+    public double calcSize() {
         double MaxCapitalAtRisk = account.getMaxRisk() * account.getBalance();
         size = Math.floor(MaxCapitalAtRisk / calcOneLotRisk() / instrument.getMinPos()) * instrument.getMinPos();
         return size;
     }
 
-    public double calcMoneyAtRisk() throws NoFoundCurrencyException {
+    public double calcMoneyAtRisk() {
         return size * calcOneLotRisk();
     }
 
-    public double calcPercentRisk() throws NoFoundCurrencyException {
+    public double calcPercentRisk() {
         return calcMoneyAtRisk() / account.getBalance();
     }
 

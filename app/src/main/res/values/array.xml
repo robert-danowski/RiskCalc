@@ -16,11 +16,13 @@
         <item>EUR</item>
         <item>USD</item>
         <item>XAU</item>
+        <item>GBP</item>
     </string-array>
 
     <string-array name="quoted_currencies_list">
         <item>USD</item>
         <item>RUB</item>
         <item>PLN</item>
+        <item>JPY</item>
     </string-array>
 </resources>

@@ -99,13 +99,14 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
 //                listOfPositions.set(i,position); //the older approach
                 this.remove(i); //remove old version
                 addAsFirstPosition(position); //new version on the beginning
-                //delete last element if listOfPositions is too long
-                if (listOfPositions.size() == maxSizeOfList) this.remove(maxSizeOfList - 1);
             }
         }
         if (!thereIs)
 //            listOfPositions.add(position); //the older approach
             addAsFirstPosition(position);
+
+        //delete last element if listOfPositions is too long
+        if (listOfPositions.size() == maxSizeOfList+1) this.remove(maxSizeOfList);
         notifyDataSetChanged();
     }
 
@@ -114,7 +115,6 @@ public class ListAdapter extends ArrayAdapter<Position> implements Serializable 
         super.remove(position);
         listOfIds.remove(listOfPositions.indexOf(position));
         listOfPositions.remove(position);
-
     }
 
 //I don't know why but when I was using Integer instead of int automatic unpacking didn't work

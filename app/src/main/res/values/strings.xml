@@ -25,5 +25,6 @@
     <string name="slash">/</string>
     <string name="quoted_currency">quoted currency</string>
     <string name="base_currency">base currency</string>
+    <string name="missing_data_in_stooq">B/D</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package pl.skuteczne_inwestowanie.riskcalc;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
@@ -26,7 +27,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import pl.skuteczne_inwestowanie.riskcalc.exceptions.NoFoundCurrencyException;
+import pl.skuteczne_inwestowanie.riskcalc.exceptions.CurrencyNotFoundException;
 
 
 public class CurrencyListActivity extends Activity implements
@@ -61,11 +62,11 @@ public class CurrencyListActivity extends Activity implements
     private String[] listQuotedCurrencies;
     private ArrayAdapter<String> aBaseCurrency;
     private ArrayAdapter<String> aQuotedCurrency;
-    private String currentQuotedBalanceCurrencyCross;
 
     BackgroundContainer mBackgroundContainer;
     boolean mSwiping = false;
     boolean mItemPressed = false;
+    @SuppressLint("UseSparseArrays")
     HashMap<Long, Integer> mItemIdTopMap = new HashMap<Long, Integer>();
 
     private static final int SWIPE_DURATION = 250;
@@ -124,9 +125,14 @@ public class CurrencyListActivity extends Activity implements
     }
 
     void updateCurrentPositionFromFields() {
-        currentPosition.getInstrument().setTickSize(getEtValue(etTickSize));
-        currentPosition.getInstrument().setTickValue(getEtValue(etTickValue));
-        currentPosition.getInstrument().setMinPos(getEtValue(etMinPos));
+        try {
+            currentPosition.getInstrument().setTickSize(getEtValue(etTickSize));
+            currentPosition.getInstrument().setTickValue(getEtValue(etTickValue));
+            currentPosition.getInstrument().setMinPos(getEtValue(etMinPos));
+        } catch (NumberFormatException nfe) {
+            //something went wrong
+            updateFieldsFromCurrentPosition();
+        }
     }
 
     private void getCurrencyListsFromResource() {
@@ -143,16 +149,7 @@ public class CurrencyListActivity extends Activity implements
         String currencyCross = currentPosition.getInstrument().getQuotedCurrency()
                 + currentPosition.getAccount().getCurrency();
         tvCurrencyRate.setText(currencyCross + " rate:");
-
-        //updating field in the same time
-        currentQuotedBalanceCurrencyCross = currencyCross;
-
-        try {
-            setEtValue(etCurrencyRate, quotationDownloader.getQuotation(currentQuotedBalanceCurrencyCross));
-        } catch (NoFoundCurrencyException e) {
-            e.printStackTrace();
-        }
-
+        setEtValue(etCurrencyRate, quotationDownloader.getQuotation(currencyCross));
         return currencyCross;
     }
 
@@ -180,13 +177,13 @@ public class CurrencyListActivity extends Activity implements
         quotationDownloader = new QuotationDownloader();
         List<Position> positionsList = new ArrayList<Position>();
         listAdapter = new ListAdapter(this, R.id.lvCurrenciesList, positionsList, mTouchListener);
-        readFieldsFromFile();
+        readFieldsFromFile(); //we have read list and current position
+        listAdapter.add(currentPosition); //important and convenient for user
         lvCurrenciesList.setAdapter(listAdapter);
-        //positionsList.add(new Position(account, new Instrument("USD", "RUB", 0.00001, 0.1, 0.01), 47.25617, 44.00000, 0.01));
     }
 
 
-    private void loadCurrencyToSettings(int position) {
+    private void loadCurrencyFromList(int position) {
         currentPosition = listAdapter.getItem(position);
         updateFieldsFromCurrentPosition();
         listAdapter.add(currentPosition); //the simplest way to sort our list
@@ -276,16 +273,14 @@ public class CurrencyListActivity extends Activity implements
                                         if (remove) {
                                             animateRemoval(lvCurrenciesList, v);
                                         } else {
-                                            mBackgroundContainer.hideBackground();
-                                            mSwiping = false;
-                                            lvCurrenciesList.setEnabled(true);
+                                            stopSwipingHideBackground();
                                         }
                                     }
                                 });
                         // if not swiping
                     } else {
                         int pos = lvCurrenciesList.getPositionForView(v);
-                        loadCurrencyToSettings(pos);
+                        loadCurrencyFromList(pos);
                     }
                 }
                 saveFiles();
@@ -297,6 +292,12 @@ public class CurrencyListActivity extends Activity implements
             return true;
         }
     };
+
+    private void stopSwipingHideBackground() {
+        mBackgroundContainer.hideBackground();
+        mSwiping = false;
+        lvCurrenciesList.setEnabled(true);
+    }
 
     /**
      * This method animates all other views in the ListView container (not including ignoreView)
@@ -339,14 +340,12 @@ public class CurrencyListActivity extends Activity implements
                             if (firstAnimation) {
                                 child.animate().withEndAction(new Runnable() {
                                     public void run() {
-                                        mBackgroundContainer.hideBackground();
-                                        mSwiping = false;
-                                        lvCurrenciesList.setEnabled(true);
+                                        stopSwipingHideBackground();
                                     }
                                 });
                                 firstAnimation = false;
                             }
-                        }
+                        } else stopSwipingHideBackground();
                     } else {
                         // Animate new views along with the others. The catch is that they did not
                         // exist in the start state, so we must calculate their starting position
@@ -359,15 +358,15 @@ public class CurrencyListActivity extends Activity implements
                         if (firstAnimation) {
                             child.animate().withEndAction(new Runnable() {
                                 public void run() {
-                                    mBackgroundContainer.hideBackground();
-                                    mSwiping = false;
-                                    lvCurrenciesList.setEnabled(true);
+                                    stopSwipingHideBackground();
                                 }
                             });
                             firstAnimation = false;
                         }
                     }
                 }
+                //after removal last element we need clean list, without animation and other background
+                if (listview.getChildCount() == 0) stopSwipingHideBackground();
                 mItemIdTopMap.clear();
                 return true;
             }
@@ -407,16 +406,11 @@ public class CurrencyListActivity extends Activity implements
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        updateCurrency(parent,position);
-    }
-
-
-    private void updateCurrency(AdapterView<?> parent, int pos) {
-        String newCurrentCurrency = parent.getItemAtPosition(pos).toString();
-        if (parent==sBaseCurrency) {
+        String newCurrentCurrency = parent.getItemAtPosition(position).toString();
+        if (parent == sBaseCurrency) {
             currentPosition.getInstrument().setBaseCurrency(newCurrentCurrency);
         }
-        if (parent==sQuotedCurrency) {
+        if (parent == sQuotedCurrency) {
             currentPosition.getInstrument().setQuotedCurrency(newCurrentCurrency);
         }
         updateTvCurrencyRate();
