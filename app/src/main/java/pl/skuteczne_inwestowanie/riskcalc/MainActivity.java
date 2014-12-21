@@ -43,13 +43,19 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
     private ImageButton ibDownload;
 
     IncrementationThread incrementationThread;
-    QuotationDownloader quotationDownloader = new QuotationDownloader();
+    QuotationDownloader quotationDownloader;
+
+    private void setQuotationDownloader(QuotationDownloader qd) {
+        quotationDownloader = qd;
+        ConvertCurrency.setQd(qd);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setQuotationDownloader(new QuotationDownloader()); //init QuotationDownloader
         position = new Position(); //position gets default settings
 
         initActivityFields();
@@ -376,7 +382,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
         try {
             tempQuotationDownloader = (QuotationDownloader) InternalStorage.readObject(this, Const.FILE_QUOTATIONS);
-            if (tempQuotationDownloader != null) quotationDownloader = tempQuotationDownloader;
+            if (tempQuotationDownloader != null) setQuotationDownloader(tempQuotationDownloader);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

@@ -1,6 +1,5 @@
 package pl.skuteczne_inwestowanie.riskcalc;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.EditText;
 
@@ -20,8 +19,8 @@ import pl.skuteczne_inwestowanie.riskcalc.exceptions.CurrencyNotFoundException;
  */
 public class QuotationDownloader implements Serializable {
 
-    //list of downloaded currencies, one for all
-    private static List<DownloadedCurrency> listOfCurrencies = new ArrayList<DownloadedCurrency>();
+    //list of downloaded currencies
+    private List<DownloadedCurrency> listOfCurrencies;
 
     private class DownloadedCurrency implements Serializable {
 
@@ -49,6 +48,10 @@ public class QuotationDownloader implements Serializable {
 
     QuotationDownloader() {
         listOfCurrencies = new ArrayList<DownloadedCurrency>();
+    }
+
+    QuotationDownloader(ArrayList<DownloadedCurrency> list) {
+        listOfCurrencies=list;
     }
 
     //only for async tasks
