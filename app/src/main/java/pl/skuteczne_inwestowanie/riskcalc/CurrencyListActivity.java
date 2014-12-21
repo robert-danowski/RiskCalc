@@ -27,7 +27,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import pl.skuteczne_inwestowanie.riskcalc.exceptions.CurrencyNotFoundException;
 
 
 public class CurrencyListActivity extends Activity implements
@@ -148,6 +147,7 @@ public class CurrencyListActivity extends Activity implements
     private String updateTvCurrencyRate() {
         String currencyCross = currentPosition.getInstrument().getQuotedCurrency()
                 + currentPosition.getAccount().getCurrency();
+        quotationDownloader.updateCurrency(currencyCross);
         tvCurrencyRate.setText(currencyCross + " rate:");
         setEtValue(etCurrencyRate, quotationDownloader.getQuotation(currencyCross));
         return currencyCross;
@@ -170,6 +170,7 @@ public class CurrencyListActivity extends Activity implements
             e.printStackTrace();
         }
         listAdapter.readListFromFile();
+        quotationDownloader.updateCurrency(currentPosition); //after (potentially) changing position and downloader
     }
 
     private void initListOfPositions() {
@@ -433,6 +434,7 @@ public class CurrencyListActivity extends Activity implements
     @Override
     public void onClick(View v) {
         if (v == ibDownloadRate) {
+            quotationDownloader.updateAllCurrencies();
             updateTvCurrencyRate();
         }
         if (v == bConfirm) {

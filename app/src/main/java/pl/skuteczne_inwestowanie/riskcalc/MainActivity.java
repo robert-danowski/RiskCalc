@@ -52,7 +52,6 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
         position = new Position(); //position gets default settings
 
-
         initActivityFields();
         initSpinner();
     }
@@ -269,7 +268,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
         if ((v == ibDecrease || v == ibIncrease) && getCurrentFocus() instanceof EditText)
             changeEt(v);
         if (v == ibDownload) {
-            quotationDownloader.updateET(this, etPrice, position.getInstrument());
+            quotationDownloader.updateETOpenPrice(this, etPrice, position.getInstrument());
 
         }
 
@@ -370,10 +369,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
         setTitle(position.getInstrument().getBaseCurrency() + position.getInstrument().getQuotedCurrency());
-
         updateValues();
-
         QuotationDownloader tempQuotationDownloader;
 
         try {
@@ -384,7 +382,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        quotationDownloader.updateCurrency(position); //after (potentially) changing position and downloader
     }
+
+   //it could be unnecessary if we agreed for waiting on downloading quotations
+
 }
 
 

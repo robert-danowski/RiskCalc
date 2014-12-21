@@ -20,8 +20,8 @@ import pl.skuteczne_inwestowanie.riskcalc.exceptions.CurrencyNotFoundException;
  */
 public class QuotationDownloader implements Serializable {
 
-    //list of downloaded currencies
-    private List<DownloadedCurrency> listOfCurrencies;
+    //list of downloaded currencies, one for all
+    private static List<DownloadedCurrency> listOfCurrencies = new ArrayList<DownloadedCurrency>();
 
     private class DownloadedCurrency implements Serializable {
 
@@ -37,10 +37,6 @@ public class QuotationDownloader implements Serializable {
             return name;
         }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
         public double getQuotation() {
             return quotation;
         }
@@ -53,9 +49,6 @@ public class QuotationDownloader implements Serializable {
 
     QuotationDownloader() {
         listOfCurrencies = new ArrayList<DownloadedCurrency>();
-
-        getQuotation("USDPLN");
-        getQuotation("RUBPLN");
     }
 
     //only for async tasks
@@ -88,25 +81,8 @@ public class QuotationDownloader implements Serializable {
         return result;
     }
 
-    public double getQuotation(String what) {
-        boolean thereIs = false;
-        double result = 0;
-        for (int i = 0; i < listOfCurrencies.size(); i++) {
-            if (listOfCurrencies.get(i).getName().equalsIgnoreCase(what)) {
-                thereIs = true;
-                result = listOfCurrencies.get(i).getQuotation();
-            }
-        }
-        if (!thereIs) {
-            //probably not updated yet
-            if (!(what.substring(0,2).equalsIgnoreCase(what.substring(3,5)))) new UpdateTask().execute(what);
-            return 1.0;
-        }
-
-        return result;
-    }
-
-    public void setQuotation(String what,double howMuch) {
+    //only for internal purposes
+    private void setQuotation(String what,double howMuch) {
         boolean thereIs = false;
         for (int i = 0; i < listOfCurrencies.size(); i++) {
             if (listOfCurrencies.get(i).getName().equalsIgnoreCase(what)) {
@@ -117,8 +93,27 @@ public class QuotationDownloader implements Serializable {
         if (!thereIs) listOfCurrencies.add(new DownloadedCurrency(what, howMuch));
     }
 
-    public void setQuotation(DownloadedCurrency dc) {
+    private void setQuotation(DownloadedCurrency dc) {
         setQuotation(dc.getName(),dc.getQuotation());
+    }
+
+    //avoiding waiting for every download, but data are delayed
+    public double getQuotation(String what) {
+
+        //every getting causes new downloading
+        if (!(what.substring(0,3).equalsIgnoreCase(what.substring(3,6)))) new UpdateTask().execute(what);
+
+        boolean thereIs = false;
+        double result = 0;
+        for (int i = 0; i < listOfCurrencies.size(); i++) {
+            if (listOfCurrencies.get(i).getName().equalsIgnoreCase(what)) {
+                thereIs = true;
+                result = listOfCurrencies.get(i).getQuotation();
+            }
+        }
+        if (!thereIs) return 1.0;
+
+        return result;
     }
 
     private class UpdateTask extends AsyncTask<String, Void, DownloadedCurrency> {
@@ -126,7 +121,7 @@ public class QuotationDownloader implements Serializable {
         @Override
         protected DownloadedCurrency doInBackground(String... params) {
             //if base and quoted currency are equal there are not in stooq.pl
-            if (params[0].substring(0,2)==params[0].substring(3,5))
+            if (params[0].substring(0,3).equalsIgnoreCase(params[0].substring(3,6)))
                 return new DownloadedCurrency(params[0], 1.0);
             else return new DownloadedCurrency(params[0],downloadQuotation(params[0]));
         }
@@ -137,10 +132,30 @@ public class QuotationDownloader implements Serializable {
         }
     }
 
-    public void updateET(MainActivity ma, EditText et, Instrument ins) {
+    public void updateETOpenPrice(MainActivity ma, EditText et, Instrument ins) {
         UpdateTask updateTask = new UpdateTask();
         updateTask.execute(ins.getBaseCurrency()+ins.getQuotedCurrency());
         ma.setEtValue(et, getQuotation(ins.getBaseCurrency()+ins.getQuotedCurrency()), -(int) Math.log10(ins.getTickSize()));
         ma.rememberOpenPrice();
     }
+
+    public void updateCurrency(String  currencyString) {
+        UpdateTask updateTask = new UpdateTask();
+        updateTask.execute(currencyString);
+    }
+
+    public void updateCurrency(DownloadedCurrency dc) {
+        updateCurrency(dc.getName());
+    }
+
+    public void updateCurrency(Position pos) {
+        updateCurrency(pos.getInstrument().getBaseCurrency() + pos.getInstrument().getQuotedCurrency());
+    }
+
+    public void updateAllCurrencies() {
+        for (DownloadedCurrency dc : listOfCurrencies) {
+            updateCurrency(dc);
+        }
+    }
+
 }
