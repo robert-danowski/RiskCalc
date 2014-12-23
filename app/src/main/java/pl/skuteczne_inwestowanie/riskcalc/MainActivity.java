@@ -36,14 +36,16 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
     private EditText etPercentRisk;
     private EditText etAmountRisk;
     private EditText etBalance;
-    private Spinner sCurrency;
+    private Spinner sBalanceCurrency;
     private Button bCalculate;
     private ImageButton ibDecrease;
     private ImageButton ibIncrease;
     private ImageButton ibDownload;
+    private ArrayAdapter<CharSequence> aBalanceCurrency;
 
-    IncrementationThread incrementationThread;
-    QuotationDownloader quotationDownloader;
+    private IncrementationThread incrementationThread;
+    private QuotationDownloader quotationDownloader;
+
 
     private void setQuotationDownloader(QuotationDownloader qd) {
         quotationDownloader = qd;
@@ -63,15 +65,15 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
     }
 
     private void initSpinner() {
-        sCurrency = (Spinner) findViewById(R.id.sCurrency);
+        sBalanceCurrency = (Spinner) findViewById(R.id.sCurrency);
 // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        aBalanceCurrency = ArrayAdapter.createFromResource(this,
                 R.array.account_currencies_list, R.layout.spinner_item);
 // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
-        sCurrency.setAdapter(adapter);
-        sCurrency.setOnItemSelectedListener(this);
+        aBalanceCurrency.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the aBalanceCurrency to the spinner
+        sBalanceCurrency.setAdapter(aBalanceCurrency);
+        sBalanceCurrency.setOnItemSelectedListener(this);
     }
 
 
@@ -282,7 +284,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent == sCurrency) {
+        if (parent == sBalanceCurrency) {
             this.position.getAccount().setCurrency(((TextView) view).getText().toString());
         }
     }
@@ -377,7 +379,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
         }
 
         setTitle(position.getInstrument().getBaseCurrency() + position.getInstrument().getQuotedCurrency());
-        updateValues();
+        sBalanceCurrency.setSelection(aBalanceCurrency.getPosition(position.getAccount().getCurrency()));
+        updateValues(); //used couple of times in main activity
         QuotationDownloader tempQuotationDownloader;
 
         try {

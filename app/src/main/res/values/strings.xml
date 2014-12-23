@@ -27,5 +27,6 @@
     <string name="base_currency">base currency</string>
     <string name="missing_data_in_stooq">B/D</string>
     <string name="website_link">http://skuteczne-inwestowanie.pl</string>
+    <string name="disclaimer">Don\'t trade on a real account. For educational purposes only.</string>
 
 </resources>

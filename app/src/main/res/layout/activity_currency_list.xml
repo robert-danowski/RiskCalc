@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -53,15 +54,13 @@
             android:id="@+id/sBaseCurrency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="35"
-            />
+            android:layout_weight="35" />
 
         <Spinner
             android:id="@+id/sQuotedCurrency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="35"
-            />
+            android:layout_weight="35" />
 
         <Space
             android:layout_width="0dp"
@@ -191,15 +190,38 @@
 
     </LinearLayout>
 
-    <view
-        android:id="@+id/listViewBackground"
-        class="pl.skuteczne_inwestowanie.riskcalc.BackgroundContainer"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="fill_parent">
 
-        <ListView
-            android:id="@+id/lvCurrenciesList"
+        <view
+            android:id="@+id/listViewBackground"
+            class="pl.skuteczne_inwestowanie.riskcalc.BackgroundContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </view>
+            android:layout_height="fill_parent"
+            android:layout_above="@+id/disclaimer">
+            <ListView
+                android:id="@+id/lvCurrenciesList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </view>
+
+        <TextView
+            android:id="@+id/disclaimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/link"
+            android:layout_centerHorizontal="true"
+            android:text="@string/disclaimer" />
+
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:autoLink="web"
+            android:text="@string/website_link" />
+
+    </RelativeLayout>
 </LinearLayout>

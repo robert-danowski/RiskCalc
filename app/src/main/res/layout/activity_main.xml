@@ -2,8 +2,8 @@
     android:id="@+id/parentView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -179,7 +179,7 @@
             android:id="@+id/ibDownload"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="20"
+            android:layout_weight="25"
             android:contentDescription="@string/update_content_description"
             android:src="@android:drawable/stat_sys_download" />
 
@@ -187,7 +187,7 @@
             android:id="@+id/etBalance"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="60"
+            android:layout_weight="50"
             android:gravity="center_horizontal"
             android:inputType="numberDecimal"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -197,7 +197,7 @@
             android:id="@+id/sCurrency"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="20" />
+            android:layout_weight="25" />
     </LinearLayout>
 
     <LinearLayout
@@ -228,13 +228,24 @@
             android:contentDescription="@string/increase_content_description"
             android:src="@android:drawable/arrow_up_float" />
     </LinearLayout>
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/website_link"
-        android:autoLink="web"
-        android:layout_gravity="center|bottom"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+        <TextView
+            android:id="@+id/disclaimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/link"
+            android:layout_centerHorizontal="true"
+            android:text="@string/disclaimer" />
+        <TextView
+            android:id="@+id/link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:autoLink="web"
+            android:text="@string/website_link" />
+    </RelativeLayout>
 </LinearLayout>
